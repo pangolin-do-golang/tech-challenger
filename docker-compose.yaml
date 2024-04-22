@@ -6,5 +6,29 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=pass
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    networks:
+      - go-food-tech-challenge-network
+
+  server:
+    build:
+      context: .
+    container_name: go_tech_challenge_app
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - pgsql
+    environment:
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_HOST=${DB_HOST}
+    networks:
+      - go-food-tech-challenge-network
+
+networks:
+  go-food-tech-challenge-network:
+    driver: bridge
