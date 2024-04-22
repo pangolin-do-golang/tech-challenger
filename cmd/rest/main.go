@@ -1,7 +1,7 @@
 package main
 
 import (
-	db2 "github.com/pangolin-do-golang/tech-challenge/internal/adapters/db"
+	dbAdapter "github.com/pangolin-do-golang/tech-challenge/internal/adapters/db"
 	"github.com/pangolin-do-golang/tech-challenge/internal/adapters/rest/server"
 	"github.com/pangolin-do-golang/tech-challenge/internal/application/order"
 	"github.com/pangolin-do-golang/tech-challenge/internal/application/product"
@@ -21,10 +21,10 @@ func main() {
 		log.Panic(err)
 	}
 
-	orderRepository := db2.NewPostgresOrderRepository(db)
+	orderRepository := dbAdapter.NewPostgresOrderRepository(db)
 	orderService := order.NewOrderService(orderRepository)
 
-	productRepository := db2.NewPostgresProductRepository(db)
+	productRepository := dbAdapter.NewPostgresProductRepository(db)
 	productService := product.NewProductService(productRepository)
 
 	restServer := server.NewRestServer(orderService, productService)
