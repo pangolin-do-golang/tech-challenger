@@ -9,6 +9,7 @@ type Cart struct {
 }
 
 type Product struct {
+	ClientID  string
 	ProductID string
 	Quantity  int
 	Comments  string
@@ -24,6 +25,6 @@ type ICartProductRepository interface {
 }
 
 type IService interface {
-	LoadCart(ctx context.Context) (*Cart, error)
+	LoadCart(ctx context.Context, clientID string) (*Cart, error)
 	AddProduct(ctx context.Context, product *Product) error
 }
