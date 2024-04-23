@@ -4,16 +4,19 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pangolin-do-golang/tech-challenge/internal/adapters/rest/handler"
 	"github.com/pangolin-do-golang/tech-challenge/internal/application/order"
+	"github.com/pangolin-do-golang/tech-challenge/internal/application/product"
 	"net/http"
 )
 
 type RestServer struct {
-	orderService *order.Service
+	orderService   *order.Service
+	productService *product.Service
 }
 
-func NewRestServer(orderService *order.Service) *RestServer {
+func NewRestServer(orderService *order.Service, productService *product.Service) *RestServer {
 	return &RestServer{
-		orderService: orderService,
+		orderService:   orderService,
+		productService: productService,
 	}
 }
 
@@ -26,6 +29,7 @@ func (rs RestServer) Serve() {
 	})
 
 	handler.RegisterOrderHandlers(r, rs.orderService)
+	handler.RegisterProductHandlers(r, rs.productService)
 
 	r.Run()
 }
