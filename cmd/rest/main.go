@@ -2,11 +2,13 @@ package main
 
 import (
 	"fmt"
-	db2 "github.com/pangolin-do-golang/tech-challenge/internal/adapters/db"
+	dbAdapter "github.com/pangolin-do-golang/tech-challenge/internal/adapters/db"
 	"github.com/pangolin-do-golang/tech-challenge/internal/adapters/rest/server"
 	"github.com/pangolin-do-golang/tech-challenge/internal/application/order"
+	"github.com/pangolin-do-golang/tech-challenge/internal/application/product"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"log"
 	"os"
 	"time"
@@ -17,9 +19,14 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	orderRepository := db2.NewPostgresOrderRepository(db)
+	orderRepository := dbAdapter.NewPostgresOrderRepository(db)
 	orderService := order.NewOrderService(orderRepository)
-	restServer := server.NewRestServer(orderService)
+
+	productRepository := dbAdapter.NewPostgresProductRepository(db)
+	productService := product.NewProductService(productRepository)
+
+	restServer := server.NewRestServer(orderService, productService)
+
 	restServer.Serve()
 }
 
