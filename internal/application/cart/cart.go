@@ -16,8 +16,8 @@ type Product struct {
 }
 
 type ICartRepository interface {
-	Create(ctx context.Context) (*Cart, error)
-	Get(ctx context.Context, clientID string) (*Cart, error)
+	Create(clientID string) (*Cart, error)
+	Get(clientID string) (*Cart, error)
 }
 
 type ICartProductRepository interface {

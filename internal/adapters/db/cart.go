@@ -1,8 +1,8 @@
 package db
 
 import (
-	"context"
 	"errors"
+	"github.com/google/uuid"
 	"github.com/pangolin-do-golang/tech-challenge/internal/application/cart"
 	"github.com/pangolin-do-golang/tech-challenge/internal/domainerrors"
 	"gorm.io/gorm"
@@ -13,9 +13,10 @@ type PostgresCartRepository struct {
 	db *gorm.DB
 }
 
-func (p *PostgresCartRepository) Create(ctx context.Context) (*cart.Cart, error) {
+func (p *PostgresCartRepository) Create(clientID string) (*cart.Cart, error) {
 	record := &CartPostgres{
-		ClientID: ctx.Value("client_id").(string),
+		ID:       uuid.New().String(),
+		ClientID: clientID,
 	}
 
 	err := p.db.Create(record).Error
@@ -29,7 +30,7 @@ func (p *PostgresCartRepository) Create(ctx context.Context) (*cart.Cart, error)
 	}, nil
 }
 
-func (p *PostgresCartRepository) Get(_ context.Context, clientID string) (*cart.Cart, error) {
+func (p *PostgresCartRepository) Get(clientID string) (*cart.Cart, error) {
 	var row CartPostgres
 	err := p.db.First(&row, "client_id = ?", clientID).Error
 	if err != nil {

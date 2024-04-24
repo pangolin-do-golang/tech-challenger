@@ -31,7 +31,7 @@ func NewRestServer(options *RestServerOptions) *RestServer {
 
 func (rs RestServer) Serve() {
 	r := gin.Default()
-	r.GET("/status", func(c *gin.Context) {
+	r.GET("/health", func(c *gin.Context) {
 		c.Status(http.StatusOK)
 	})
 

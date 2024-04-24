@@ -7,18 +7,19 @@ import (
 )
 
 type CartAddProductPayload struct {
-	ClientID  string `json:"client_id"`
-	ProductID string `json:"product_id"`
-	Quantity  int    `json:"quantity"`
+	ClientID  string `json:"client_id" binding:"required"`
+	ProductID string `json:"product_id" binding:"required"`
+	Quantity  int    `json:"quantity" binding:"required"`
 	Comments  string `json:"comments"`
 }
 
 func RegisterCartHandlers(router *gin.Engine, service cart.IService) {
 	router.POST("/cart/add-product", func(c *gin.Context) {
-		var payload *CartAddProductPayload
+		payload := &CartAddProductPayload{}
 		err := c.BindJSON(payload)
 		if err != nil {
-			c.Status(http.StatusBadRequest)
+			// TODO melhorar retorno de validação
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
@@ -30,11 +31,10 @@ func RegisterCartHandlers(router *gin.Engine, service cart.IService) {
 		})
 
 		if err != nil {
-			c.Status(http.StatusInternalServerError)
-
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
 			return
 		}
 
-		c.Status(http.StatusOK)
+		c.Status(http.StatusCreated)
 	})
 }

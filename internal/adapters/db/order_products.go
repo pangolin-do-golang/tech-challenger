@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"github.com/google/uuid"
 	"github.com/pangolin-do-golang/tech-challenge/internal/application/cart"
 	"gorm.io/gorm"
 )
@@ -12,6 +13,7 @@ type PostgresCartProductsRepository struct {
 
 func (p PostgresCartProductsRepository) Create(ctx context.Context, cartID string, product *cart.Product) error {
 	cartProduct := CartProductsPostgres{
+		ID:        uuid.New().String(),
 		CartID:    cartID,
 		ProductID: product.ProductID,
 		Quantity:  product.Quantity,
