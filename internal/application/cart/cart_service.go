@@ -43,3 +43,23 @@ func (s *Service) AddProduct(ctx context.Context, product *Product) error {
 
 	return s.CartProductsRepository.Create(ctx, cart.ID, product)
 }
+
+func (s *Service) RemoveProduct(ctx context.Context, clientID string, productID string) error {
+	cart, err := s.LoadCart(ctx, clientID)
+	if err != nil {
+		return err
+	}
+
+	products, err := s.CartProductsRepository.GetByCartID(ctx, cart.ID)
+	if err != nil {
+		return err
+	}
+
+	for _, product := range products {
+		if product.ProductID == productID {
+			return s.CartProductsRepository.DeleteByProductID(ctx, cart.ID, productID)
+		}
+	}
+
+	return nil
+}

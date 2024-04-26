@@ -22,9 +22,12 @@ type ICartRepository interface {
 
 type ICartProductRepository interface {
 	Create(ctx context.Context, cartID string, product *Product) error
+	GetByCartID(ctx context.Context, cartID string) ([]*Product, error)
+	DeleteByProductID(ctx context.Context, cartID, productID string) error
 }
 
 type IService interface {
 	LoadCart(ctx context.Context, clientID string) (*Cart, error)
 	AddProduct(ctx context.Context, product *Product) error
+	RemoveProduct(ctx context.Context, clientID string, productID string) error
 }

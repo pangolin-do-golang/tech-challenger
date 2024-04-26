@@ -6,16 +6,16 @@ import (
 	"net/http"
 )
 
-type CartAddProductPayload struct {
-	ClientID  string `json:"client_id" binding:"required"`
-	ProductID string `json:"product_id" binding:"required"`
-	Quantity  int    `json:"quantity" binding:"required"`
-	Comments  string `json:"comments"`
-}
-
 func RegisterCartHandlers(router *gin.Engine, service cart.IService) {
 	router.POST("/cart/add-product", func(c *gin.Context) {
-		payload := &CartAddProductPayload{}
+		type Payload struct {
+			ClientID  string `json:"client_id" binding:"required"`
+			ProductID string `json:"product_id" binding:"required"`
+			Quantity  int    `json:"quantity" binding:"required"`
+			Comments  string `json:"comments"`
+		}
+
+		payload := &Payload{}
 		err := c.BindJSON(payload)
 		if err != nil {
 			// TODO melhorar retorno de validação
@@ -36,5 +36,26 @@ func RegisterCartHandlers(router *gin.Engine, service cart.IService) {
 		}
 
 		c.Status(http.StatusCreated)
+	})
+
+	router.POST("/cart/remove-product", func(c *gin.Context) {
+		type Payload struct {
+			ClientID  string `json:"client_id" binding:"required"`
+			ProductID string `json:"product_id" binding:"required"`
+		}
+		payload := &Payload{}
+		err := c.BindJSON(payload)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		err = service.RemoveProduct(c.Request.Context(), payload.ClientID, payload.ProductID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
+			return
+		}
+
+		c.Status(http.StatusAccepted)
 	})
 }
