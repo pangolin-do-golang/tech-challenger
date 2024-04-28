@@ -14,7 +14,27 @@ Execute
 go mod tidy
 ```
 
-### Executing with Docker Compose
+## Defining Envs
+
+To correctly use the project, it is necessary to define a .env file, with the values for the envs:
+
+* DB_USERNAME 
+* DB_PASSWORD 
+* DB_HOST 
+* DB_NAME 
+* DB_PORT
+
+We recommend using for development with the following values:
+
+```
+DB_USERNAME=user
+DB_PASSWORD=pass
+DB_HOST=pgsql
+DB_NAME=postgres
+DB_PORT=5432
+```
+
+## Executing with Docker Compose
 
 ```shell
 docker-compose build
@@ -56,3 +76,21 @@ The diagram contains:
 This project follows the models proposed by Hexagonal Architecture
 
 ![Source: https://making.ndd.tech/reflex%C3%B5es-sobre-o-uso-de-orms-em-dom%C3%ADnios-complexos-parte-2-d7f0ac937121](https://miro.medium.com/v2/resize:fit:521/1*vrXUudR0NzRESXmZl_cHoA.png)
+
+## Swagger
+
+This project makes use of the library [swag](https://github.com/swaggo/swag?tab=readme-ov-file#how-to-use-it-with-gin) to generate the swagger documentation.
+
+### Install
+
+Follow the steps described in the [official documentation](https://github.com/swaggo/swag?tab=readme-ov-file#getting-started)
+
+### Generate 
+
+```shell
+ swag init -g cmd/rest/main.go 
+```
+
+### Access the documentation
+
+The documentation can be founded at the path `/docs/swagger.yaml` or accessing this [link](./docs/swagger.yaml).
