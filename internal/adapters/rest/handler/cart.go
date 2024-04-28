@@ -11,8 +11,9 @@ func RegisterCartHandlers(router *gin.Engine, service cart.IService) {
 		type Payload struct {
 			ClientID  string `json:"client_id" binding:"required"`
 			ProductID string `json:"product_id" binding:"required"`
-			Quantity  int    `json:"quantity" binding:"required"`
-			Comments  string `json:"comments"`
+			// TODO validação de quantidade >= 0 / estoque
+			Quantity int    `json:"quantity" binding:"required"`
+			Comments string `json:"comments"`
 		}
 
 		payload := &Payload{}
@@ -35,7 +36,7 @@ func RegisterCartHandlers(router *gin.Engine, service cart.IService) {
 			return
 		}
 
-		c.Status(http.StatusCreated)
+		c.Status(http.StatusOK)
 	})
 
 	router.POST("/cart/remove-product", func(c *gin.Context) {
@@ -56,6 +57,34 @@ func RegisterCartHandlers(router *gin.Engine, service cart.IService) {
 			return
 		}
 
-		c.Status(http.StatusAccepted)
+		c.Status(http.StatusOK)
+	})
+
+	router.POST("/cart/edit-product", func(c *gin.Context) {
+		type Payload struct {
+			ClientID  string `json:"client_id" binding:"required"`
+			ProductID string `json:"product_id" binding:"required"`
+			Quantity  int    `json:"quantity" binding:"required"`
+			Comments  string `json:"comments"`
+		}
+		payload := &Payload{}
+		err := c.BindJSON(payload)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		err = service.EditProduct(c.Request.Context(), &cart.Product{
+			ClientID:  payload.ClientID,
+			ProductID: payload.ProductID,
+			Quantity:  payload.Quantity,
+			Comments:  payload.Comments,
+		})
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
+			return
+		}
+
+		c.Status(http.StatusOK)
 	})
 }

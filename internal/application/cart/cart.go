@@ -24,10 +24,12 @@ type ICartProductRepository interface {
 	Create(ctx context.Context, cartID string, product *Product) error
 	GetByCartID(ctx context.Context, cartID string) ([]*Product, error)
 	DeleteByProductID(ctx context.Context, cartID, productID string) error
+	UpdateProductByProductID(ctx context.Context, cartID, productID string, product *Product) error
 }
 
 type IService interface {
 	LoadCart(ctx context.Context, clientID string) (*Cart, error)
 	AddProduct(ctx context.Context, product *Product) error
 	RemoveProduct(ctx context.Context, clientID string, productID string) error
+	EditProduct(ctx context.Context, product *Product) error
 }

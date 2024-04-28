@@ -59,6 +59,15 @@ func (p *PostgresCartProductsRepository) DeleteByProductID(ctx context.Context, 
 	return p.db.Delete(&CartProductsPostgres{}, "cart_id = ? AND product_id = ?", cartID, productID).Error
 }
 
+func (p *PostgresCartProductsRepository) UpdateProductByProductID(ctx context.Context, cartID, productID string, product *cart.Product) error {
+	return p.db.Model(&CartProductsPostgres{}).
+		Where("cart_id = ? AND product_id = ?", cartID, productID).
+		Updates(map[string]interface{}{
+			"quantity": product.Quantity,
+			"comments": product.Comments,
+		}).Error
+}
+
 func (op *CartProductsPostgres) TableName() string {
 	return "cart_products"
 }
