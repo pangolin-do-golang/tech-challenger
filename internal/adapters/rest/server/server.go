@@ -38,6 +38,9 @@ func (rs RestServer) Serve() {
 	handler.RegisterOrderHandlers(r, rs.orderService)
 	handler.RegisterProductHandlers(r, rs.productService)
 	handler.RegisterCartHandlers(r, rs.cartService)
-
-	r.Run()
+	handler.RegisterSwaggerHandlers(r)
+	err := r.Run()
+	if err != nil {
+		panic(err)
+	}
 }

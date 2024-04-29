@@ -6,21 +6,39 @@ import (
 	"net/http"
 )
 
+type OrderHandler struct {
+	service *order.Service
+}
+
 func RegisterOrderHandlers(router *gin.Engine, service *order.Service) {
+	handler := &OrderHandler{
+		service: service,
+	}
 
-	router.GET("/order/:id", func(c *gin.Context) {
-		id := c.Param("id")
+	router.GET("/order/:id", handler.Get)
+}
 
-		order, err := service.Get(id)
+// Get Order godoc
+// @Summary Get order by ID
+// @Description Get order by ID
+// @Tags order Routes
+// @Param        id   path      string  true  "Order ID"
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} order.Order{}
+// @Router /order/:id [get]
+func (handler *OrderHandler) Get(c *gin.Context) {
+	id := c.Param("id")
 
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": "something went bad :(",
-			})
+	order, err := handler.service.Get(id)
 
-			return
-		}
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "something went bad :(",
+		})
 
-		c.JSON(http.StatusOK, order)
-	})
+		return
+	}
+
+	c.JSON(http.StatusOK, order)
 }

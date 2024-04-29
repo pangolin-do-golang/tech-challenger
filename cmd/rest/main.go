@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/joho/godotenv"
+	_ "github.com/pangolin-do-golang/tech-challenge/docs"
 	dbAdapter "github.com/pangolin-do-golang/tech-challenge/internal/adapters/db"
 	"github.com/pangolin-do-golang/tech-challenge/internal/adapters/rest/server"
 	"github.com/pangolin-do-golang/tech-challenge/internal/application/cart"
@@ -14,6 +15,12 @@ import (
 	"os"
 )
 
+// @title Tech Challenge Food API
+// @version 0.1.0
+// @description Fast Food API for FIAP Tech course
+
+// @host localhost:8080
+// @BasePath /
 func main() {
 	db, err := initDb()
 	if err != nil {
