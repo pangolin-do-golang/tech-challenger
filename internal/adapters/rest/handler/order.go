@@ -1,9 +1,10 @@
 package handler
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/pangolin-do-golang/tech-challenge/internal/application/order"
-	"net/http"
 )
 
 type OrderHandler struct {
