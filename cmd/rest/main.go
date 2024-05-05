@@ -2,17 +2,19 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"os"
+
 	"github.com/joho/godotenv"
 	_ "github.com/pangolin-do-golang/tech-challenge/docs"
 	dbAdapter "github.com/pangolin-do-golang/tech-challenge/internal/adapters/db"
 	"github.com/pangolin-do-golang/tech-challenge/internal/adapters/rest/server"
 	"github.com/pangolin-do-golang/tech-challenge/internal/application/cart"
+	"github.com/pangolin-do-golang/tech-challenge/internal/application/customer"
 	"github.com/pangolin-do-golang/tech-challenge/internal/application/order"
 	"github.com/pangolin-do-golang/tech-challenge/internal/application/product"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"log"
-	"os"
 )
 
 // @title Tech Challenge Food API
@@ -26,6 +28,10 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	customerRepository := dbAdapter.NewPostgresCustomerRepository(db)
+	customerService := customer.NewService(customerRepository)
+
 	orderRepository := dbAdapter.NewPostgresOrderRepository(db)
 	orderService := order.NewOrderService(orderRepository)
 
@@ -37,9 +43,10 @@ func main() {
 	cartService := cart.NewService(cartRepository, cartProductsRepository)
 
 	restServer := server.NewRestServer(&server.RestServerOptions{
-		OrderService:   orderService,
-		ProductService: productService,
-		CartService:    cartService,
+		OrderService:    orderService,
+		ProductService:  productService,
+		CartService:     cartService,
+		CustomerService: customerService,
 	})
 
 	restServer.Serve()
@@ -58,5 +65,8 @@ func initDb() (*gorm.DB, error) {
 	if err != nil {
 		log.Panic(err)
 	}
+
+	db.AutoMigrate(&dbAdapter.CustomerPostgres{})
+
 	return db, nil
 }

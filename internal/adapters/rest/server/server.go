@@ -1,36 +1,43 @@
 package server
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/pangolin-do-golang/tech-challenge/internal/adapters/rest/handler"
+	"github.com/pangolin-do-golang/tech-challenge/internal/adapters/rest/middleware"
 	"github.com/pangolin-do-golang/tech-challenge/internal/application/cart"
+	"github.com/pangolin-do-golang/tech-challenge/internal/application/customer"
 	"github.com/pangolin-do-golang/tech-challenge/internal/application/order"
 	"github.com/pangolin-do-golang/tech-challenge/internal/application/product"
-	"net/http"
 )
 
 type RestServer struct {
-	orderService   *order.Service
-	productService *product.Service
-	cartService    cart.IService
+	orderService    *order.Service
+	productService  *product.Service
+	cartService     cart.IService
+	customerService customer.IService
 }
 
 type RestServerOptions struct {
-	OrderService   *order.Service
-	ProductService *product.Service
-	CartService    cart.IService
+	OrderService    *order.Service
+	ProductService  *product.Service
+	CartService     cart.IService
+	CustomerService customer.IService
 }
 
 func NewRestServer(options *RestServerOptions) *RestServer {
 	return &RestServer{
-		orderService:   options.OrderService,
-		productService: options.ProductService,
-		cartService:    options.CartService,
+		orderService:    options.OrderService,
+		productService:  options.ProductService,
+		cartService:     options.CartService,
+		customerService: options.CustomerService,
 	}
 }
 
 func (rs RestServer) Serve() {
 	r := gin.Default()
+	r.Use(middleware.CorsMiddleware())
 	r.GET("/health", func(c *gin.Context) {
 		c.Status(http.StatusOK)
 	})
@@ -38,6 +45,7 @@ func (rs RestServer) Serve() {
 	handler.RegisterOrderHandlers(r, rs.orderService)
 	handler.RegisterProductHandlers(r, rs.productService)
 	handler.RegisterCartHandlers(r, rs.cartService)
+	handler.RegisterCustomerHandlers(r, rs.customerService)
 	handler.RegisterSwaggerHandlers(r)
 	err := r.Run()
 	if err != nil {

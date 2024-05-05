@@ -1,5 +1,18 @@
 basePath: /
 definitions:
+  customer.Customer:
+    properties:
+      age:
+        type: integer
+      cpf:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
   order.Order:
     properties:
       createdAt:
@@ -18,6 +31,154 @@ info:
   title: Tech Challenge Food API
   version: 0.1.0
 paths:
+  /customer:
+    get:
+      consumes:
+      - application/json
+      description: Get all customer's list
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/customer.Customer'
+            type: array
+      summary: Get customer list
+      tags:
+      - Customer
+    post:
+      consumes:
+      - application/json
+      description: Create a new customer
+      parameters:
+      - description: Name example
+        in: body
+        name: name
+        required: true
+        schema:
+          type: string
+      - description: "03985594051"
+        in: body
+        name: cpf
+        required: true
+        schema:
+          type: string
+      - description: example@example.com
+        in: body
+        name: email
+        required: true
+        schema:
+          type: string
+      - description: "18"
+        in: body
+        name: age
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: customer.Customer
+          schema:
+            $ref: '#/definitions/customer.Customer'
+        "400":
+          description: Invalid cpf
+      summary: Create customer
+      tags:
+      - Customer
+  /customer/:cpf:
+    get:
+      consumes:
+      - application/json
+      description: Get a customer by cpf
+      parameters:
+      - description: customer cpf
+        in: path
+        name: cpf
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/customer.Customer'
+        "404":
+          description: Customer not found
+      summary: Get customer by cpf
+      tags:
+      - Customer
+  /customer/:id:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a customer by id
+      parameters:
+      - description: "123456789"
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Invalid identifier informed
+      summary: Delete customer
+      tags:
+      - Customer
+    put:
+      consumes:
+      - application/json
+      description: Update a customer by id
+      parameters:
+      - description: "123456789"
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Name example
+        in: body
+        name: name
+        required: true
+        schema:
+          type: string
+      - description: "03985594051"
+        in: body
+        name: cpf
+        required: true
+        schema:
+          type: string
+      - description: example@example.com
+        in: body
+        name: email
+        required: true
+        schema:
+          type: string
+      - description: "18"
+        in: body
+        name: age
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: customer.Customer
+          schema:
+            $ref: '#/definitions/customer.Customer'
+        "400":
+          description: Invalid identifier informed
+      summary: Update customer
+      tags:
+      - Customer
   /order/:id:
     get:
       consumes:
