@@ -16,6 +16,6 @@ func RegisterCustomerHandlers(router *gin.Engine, service customer.IService) {
 	router.POST("/customer", customerController.Create)
 	router.PUT("/customer/:id", customerController.Update)
 	router.DELETE("/customer/:id", customerController.Delete)
-	router.GET("/customer/", customerController.GetAll)
+	router.GET("/customer", customerController.GetAll)
 	router.GET("/customer/:cpf", customerController.GetByCpf)
 }

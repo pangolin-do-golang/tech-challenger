@@ -25,7 +25,7 @@ func NewCustomerController(service customer.IService) *CustomerController {
 	}
 }
 
-// Create customer godoc
+// Create Create a new customer
 // @Summary Create customer
 // @Description Create a new customer
 // @Tags Customer
@@ -67,7 +67,7 @@ func (ctrl CustomerController) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, created)
 }
 
-// Update customer godoc
+// Update Update a customer by id
 // @Summary Update customer
 // @Description Update a customer by id
 // @Tags Customer
@@ -121,7 +121,7 @@ func (ctrl CustomerController) Update(c *gin.Context) {
 	c.JSON(http.StatusCreated, updated)
 }
 
-// Delete customer godoc
+// Delete Delete a customer by id
 // @Summary Delete customer
 // @Description Delete a customer by id
 // @Tags Customer
@@ -154,9 +154,9 @@ func (ctrl CustomerController) Delete(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-// Get customer list godoc
+// GetAll Get all customer's list
 // @Summary Get customer list
-// @Description Get customer list
+// @Description Get all customer's list
 // @Tags Customer
 // @Accept json
 // @Produce json
@@ -176,9 +176,9 @@ func (ctrl CustomerController) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, customerSlice)
 }
 
-// Get customer godoc
+// GetByCpf Get a customer by cpf
 // @Summary Get customer by cpf
-// @Description Get customer by cpf
+// @Description Get a customer by cpf
 // @Tags Customer
 // @Param cpf path string true "customer cpf"
 // @Accept json
@@ -189,7 +189,7 @@ func (ctrl CustomerController) GetAll(c *gin.Context) {
 func (ctrl CustomerController) GetByCpf(c *gin.Context) {
 	cpf := c.Param("cpf")
 
-	customer, err := ctrl.service.GetByCpf(cpf)
+	customerRecord, err := ctrl.service.GetByCpf(cpf)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -199,7 +199,7 @@ func (ctrl CustomerController) GetByCpf(c *gin.Context) {
 		return
 	}
 
-	if customer.Id == 0 {
+	if customerRecord.Id == 0 {
 		c.JSON(http.StatusNotFound, gin.H{
 			"NotFound": "Customer not found.",
 		})
@@ -207,5 +207,5 @@ func (ctrl CustomerController) GetByCpf(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, customer)
+	c.JSON(http.StatusOK, customerRecord)
 }

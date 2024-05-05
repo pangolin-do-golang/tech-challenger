@@ -17,7 +17,7 @@ const docTemplate = `{
     "paths": {
         "/customer": {
             "get": {
-                "description": "Get customer list",
+                "description": "Get all customer's list",
                 "consumes": [
                     "application/json"
                 ],
@@ -105,7 +105,7 @@ const docTemplate = `{
         },
         "/customer/:cpf": {
             "get": {
-                "description": "Get customer by cpf",
+                "description": "Get a customer by cpf",
                 "consumes": [
                     "application/json"
                 ],
