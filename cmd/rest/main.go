@@ -66,7 +66,13 @@ func initDb() (*gorm.DB, error) {
 		log.Panic(err)
 	}
 
-	db.AutoMigrate(&dbAdapter.CustomerPostgres{})
+	db.AutoMigrate(
+		&dbAdapter.CustomerPostgres{},
+		&dbAdapter.ProductPostgres{},
+		&dbAdapter.OrderPostgres{},
+		&dbAdapter.CartPostgres{},
+		&dbAdapter.CartProductsPostgres{},
+	)
 
 	return db, nil
 }
