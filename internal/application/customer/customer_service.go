@@ -1,5 +1,7 @@
 package customer
 
+import "github.com/google/uuid"
+
 type Service struct {
 	repository IRepository
 }
@@ -14,11 +16,11 @@ func (s *Service) Create(customer Customer) (*Customer, error) {
 	return s.repository.Create(customer)
 }
 
-func (s *Service) Update(customerId uint, customer Customer) (*Customer, error) {
+func (s *Service) Update(customerId uuid.UUID, customer Customer) (*Customer, error) {
 	return s.repository.Update(customerId, customer)
 }
 
-func (s *Service) Delete(customerId uint) error {
+func (s *Service) Delete(customerId uuid.UUID) error {
 	return s.repository.Delete(customerId)
 }
 
