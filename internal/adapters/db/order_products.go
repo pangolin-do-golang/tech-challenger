@@ -14,8 +14,8 @@ type PostgresCartProductsRepository struct {
 
 type CartProductsPostgres struct {
 	BaseModel
-	CartID    uuid.UUID `gorm:"cart_id"`
-	ProductID uuid.UUID `gorm:"product_id"`
+	CartID    uuid.UUID `gorm:"type:uuid" json:"cart_id"`
+	ProductID uuid.UUID `gorm:"type:uuid" json:"product_id"`
 	Quantity  int       `gorm:"quantity"`
 	Comments  string    `gorm:"comments"`
 }
