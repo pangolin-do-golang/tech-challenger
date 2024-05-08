@@ -16,7 +16,7 @@ type PostgresCustomerRepository struct {
 type CustomerPostgres struct {
 	BaseModel
 	Name  string `gorm:"name"`
-	Cpf   string `gorm:"cpf"`
+	Cpf   string `gorm:"uniqueIndex" json:"cpf"`
 	Email string `gorm:"email"`
 	Age   int    `gorm:"age"`
 }

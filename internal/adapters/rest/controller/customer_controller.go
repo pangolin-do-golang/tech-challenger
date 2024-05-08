@@ -82,8 +82,7 @@ func (ctrl CustomerController) Create(c *gin.Context) {
 // @Failure 400 "Invalid identifier informed"
 // @Router /customer/:id [put]
 func (ctrl CustomerController) Update(c *gin.Context) {
-	id := c.Param("id")
-	parsedId, err := uuid.Parse(id)
+	id, err := uuid.Parse(c.Param("id"))
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -103,7 +102,7 @@ func (ctrl CustomerController) Update(c *gin.Context) {
 		return
 	}
 
-	updated, err := ctrl.service.Update(parsedId, customer.Customer{
+	updated, err := ctrl.service.Update(id, customer.Customer{
 		Name:  payload.Name,
 		Cpf:   payload.Cpf,
 		Email: payload.Email,
@@ -132,8 +131,7 @@ func (ctrl CustomerController) Update(c *gin.Context) {
 // @Failure 400 "Invalid identifier informed"
 // @Router /customer/:id [delete]
 func (ctrl CustomerController) Delete(c *gin.Context) {
-	id := c.Param("id")
-	parsedId, err := uuid.Parse(id)
+	id, err := uuid.Parse(c.Param("id"))
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -143,7 +141,7 @@ func (ctrl CustomerController) Delete(c *gin.Context) {
 		return
 	}
 
-	if err := ctrl.service.Delete(parsedId); err != nil {
+	if err := ctrl.service.Delete(id); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
