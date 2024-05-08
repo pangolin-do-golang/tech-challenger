@@ -1,9 +1,11 @@
 package handler
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/pangolin-do-golang/tech-challenge/internal/application/product"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	"github.com/pangolin-do-golang/tech-challenge/internal/application/product"
 )
 
 func RegisterProductHandlers(router *gin.Engine, service *product.Service) {
@@ -26,14 +28,23 @@ func RegisterProductHandlers(router *gin.Engine, service *product.Service) {
 	})
 
 	router.DELETE("/product/:id", func(c *gin.Context) {
-		id := c.Param("id")
+		id, err := uuid.Parse(c.Param("id"))
 
-		err := service.Delete(id)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "Invalid identifier informed.",
+			})
+
+			return
+		}
+
+		err = service.Delete(id)
 
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"error": "something went bad :(",
 			})
+
 			return
 		}
 
