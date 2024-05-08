@@ -1,6 +1,10 @@
 package customer
 
-import "github.com/google/uuid"
+import (
+	"errors"
+
+	"github.com/google/uuid"
+)
 
 type Service struct {
 	repository IRepository
@@ -13,6 +17,12 @@ func NewService(customerRepository IRepository) *Service {
 }
 
 func (s *Service) Create(customer Customer) (*Customer, error) {
+	existingCustomer, _ := s.GetByCpf(customer.Cpf)
+
+	if existingCustomer != nil {
+		return nil, errors.New("entered cpf is already registered in our system")
+	}
+
 	return s.repository.Create(customer)
 }
 
