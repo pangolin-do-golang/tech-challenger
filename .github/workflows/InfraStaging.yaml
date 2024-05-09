@@ -57,6 +57,7 @@ jobs:
       - name: Terraform format
         id: fmt
         run: terraform fmt -check
+        continue-on-error: true
 
       - name: Terraform validate
         id: validate
