@@ -1,7 +1,7 @@
 name: "Terraform Infrastructure"
 
 on:
-  workflow_dispatch:
+  workflow_dispatch
 #  push:
 #    branches-ignore:
 #      - main
