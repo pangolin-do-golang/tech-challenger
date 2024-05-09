@@ -52,7 +52,7 @@ jobs:
         shell: bash
         run: |
           workspace="${{ env.WORKSPACE }}"
-          terraform workspace select "$workspace" || terraform workspace new "$workspace"        
+          terraform workspace select -or-create "$workspace"    
 
       - name: Terraform format
         id: fmt
@@ -65,7 +65,7 @@ jobs:
       - name: Terraform plan
         id: plan
         if: github.event_name == 'pull_request' || github.event_name == 'push'
-        run: terraform plan -no-color -input=false
+        run: terraform plan -input=false #-no-color
         continue-on-error: true
 
       - uses: actions/github-script@v7
