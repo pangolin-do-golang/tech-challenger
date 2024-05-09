@@ -8,10 +8,6 @@ terraform {
       version = "5.48.0"
     }
 
-    provider "aws" {
-      region = var.region
-    }
-
     kubernetes = {
       source  = "hashicorp/kubernetes"
       version = "2.30.0"
@@ -27,13 +23,17 @@ terraform {
       source  = "gavinbunney/kubectl"
       version = "1.14.0"
     }
-
   }
-#   backend "s3" {
-#     bucket = "terraformstate-pos-tech"
-#     key    = "terraform.tfstate"
-#     region = "us-east-1"
-#
-#   }
+
+
+  backend "s3" {
+    bucket = "terraformstate-pos-tech"
+    key    = "terraform.tfstate"
+    region = "us-east-1"
+  }
+}
+
+provider "aws" {
+  region = "us-east-1"
 }
 
