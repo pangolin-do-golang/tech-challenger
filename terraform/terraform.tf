@@ -26,11 +26,11 @@ terraform {
     }
 
   }
-  backend "s3" {
-    bucket = "terraformstate-pos-tech"
-    key    = "terraform.tfstate"
-    region = "us-east-1"
-
-  }
+#   backend "s3" {
+#     bucket = "terraformstate-pos-tech"
+#     key    = "terraform.tfstate"
+#     region = "us-east-1"
+#
+#   }
 }
 
