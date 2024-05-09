@@ -1,0 +1,72 @@
+name: Deploy Staging
+
+on:
+  workflow_dispatch:
+#  push:
+#    branches:
+#      - '**'
+#    branches-ignore:
+#      - main
+#  pull_request:
+#    branches:
+#      - '**'
+#    branches-ignore:
+#      - main
+
+jobs:
+  Package:
+    name: Build And Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/golang@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v5.3.0
+        with:
+          context: .
+          load: true
+          tags: "${{ env.GITHUB_REGISTRY }}/${{ env.GITHUB_REPOSITORY }}:${{ env.DOCKER_IMAGE_TAG }}"
+
+      - name: Scan Docker image 🐳
+        uses: snyk/actions/docker@master
+        continue-on-error: true
+        with:
+          image: "${{ env.GITHUB_REGISTRY }}/${{ env.GITHUB_REPOSITORY }}:${{ env.DOCKER_IMAGE_TAG }}"
+          args: --file=Dockerfile --severity-threshold=high --sarif-file-output=snyk.sarif
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Log in to the Container registry 📦
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.GITHUB_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v5.3.0
+        if: success()
+        with:
+          context: .
+          push: true
+          tags: "${{ env.GITHUB_REGISTRY }}/${{ env.GITHUB_REPOSITORY }}:${{ env.DOCKER_IMAGE_TAG }}"
