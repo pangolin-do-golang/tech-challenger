@@ -2,9 +2,11 @@ package db
 
 import (
 	"fmt"
+	"time"
+
+	"github.com/google/uuid"
 	"github.com/pangolin-do-golang/tech-challenge/internal/application/product"
 	"gorm.io/gorm"
-	"time"
 )
 
 type PostgresProductRepository struct {
@@ -12,13 +14,11 @@ type PostgresProductRepository struct {
 }
 
 type ProductPostgres struct {
-	Id          string    `gorm:"id"`
-	Name        string    `gorm:"name"`
-	Description string    `gorm:"description"`
-	Category    string    `gorm:"category"`
-	Price       float64   `gorm:"price"`
-	CreatedAt   time.Time `gorm:"created_at"`
-	DeletedAt   time.Time `gorm:"deleted_at"`
+	BaseModel
+	Name        string  `gorm:"name"`
+	Description string  `gorm:"description"`
+	Category    string  `gorm:"category"`
+	Price       float64 `gorm:"price"`
 }
 
 func (pp ProductPostgres) TableName() string {
@@ -56,19 +56,18 @@ func (repo *PostgresProductRepository) Search(search string, category string) (*
 
 	for _, record := range dbRecords {
 		results = append(results, product.Product{
-			Id:          record.Id,
+			Id:          record.ID,
 			Name:        record.Name,
 			Description: record.Description,
 			Category:    record.Category,
 			Price:       record.Price,
-			CreatedAt:   record.CreatedAt,
 		})
 	}
 
 	return &results, nil
 }
 
-func (repo *PostgresProductRepository) Delete(id string) error {
+func (repo *PostgresProductRepository) Delete(id uuid.UUID) error {
 	var dbRecord *ProductPostgres
 
 	if err := repo.db.Where("id = ? and deleted_at is null", id).First(&dbRecord).Error; err != nil {

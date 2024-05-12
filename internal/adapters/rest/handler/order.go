@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/pangolin-do-golang/tech-challenge/internal/application/order"
 )
 
@@ -29,7 +30,15 @@ func RegisterOrderHandlers(router *gin.Engine, service *order.Service) {
 // @Success 200 {object} order.Order{}
 // @Router /order/:id [get]
 func (handler *OrderHandler) Get(c *gin.Context) {
-	id := c.Param("id")
+	id, err := uuid.Parse(c.Param("id"))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid identifier informed.",
+		})
+
+		return
+	}
 
 	order, err := handler.service.Get(id)
 

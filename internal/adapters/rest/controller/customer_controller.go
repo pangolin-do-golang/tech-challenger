@@ -2,9 +2,9 @@ package controller
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/pangolin-do-golang/tech-challenge/internal/application/customer"
 )
 
@@ -82,8 +82,7 @@ func (ctrl CustomerController) Create(c *gin.Context) {
 // @Failure 400 "Invalid identifier informed"
 // @Router /customer/:id [put]
 func (ctrl CustomerController) Update(c *gin.Context) {
-	id := c.Param("id")
-	parsedId, err := strconv.ParseUint(id, 10, 64)
+	id, err := uuid.Parse(c.Param("id"))
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -103,7 +102,7 @@ func (ctrl CustomerController) Update(c *gin.Context) {
 		return
 	}
 
-	updated, err := ctrl.service.Update(uint(parsedId), customer.Customer{
+	updated, err := ctrl.service.Update(id, customer.Customer{
 		Name:  payload.Name,
 		Cpf:   payload.Cpf,
 		Email: payload.Email,
@@ -132,8 +131,7 @@ func (ctrl CustomerController) Update(c *gin.Context) {
 // @Failure 400 "Invalid identifier informed"
 // @Router /customer/:id [delete]
 func (ctrl CustomerController) Delete(c *gin.Context) {
-	id := c.Param("id")
-	parsedId, err := strconv.ParseUint(id, 10, 64)
+	id, err := uuid.Parse(c.Param("id"))
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -143,7 +141,7 @@ func (ctrl CustomerController) Delete(c *gin.Context) {
 		return
 	}
 
-	if err := ctrl.service.Delete(uint(parsedId)); err != nil {
+	if err := ctrl.service.Delete(id); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
@@ -199,7 +197,7 @@ func (ctrl CustomerController) GetByCpf(c *gin.Context) {
 		return
 	}
 
-	if customerRecord.Id == 0 {
+	if customerRecord.Id == uuid.Nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"NotFound": "Customer not found.",
 		})

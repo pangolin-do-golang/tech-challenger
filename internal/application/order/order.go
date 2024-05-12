@@ -1,14 +1,18 @@
 package order
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type Order struct {
-	Id          string
+	Id          uuid.UUID
 	CreatedAt   time.Time
 	TotalAmount float64
 	Status      string
 }
 
 type Repository interface {
-	Get(id string) (*Order, error)
+	Get(id uuid.UUID) (*Order, error)
 }
