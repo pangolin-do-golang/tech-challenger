@@ -1,9 +1,13 @@
 package product
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type Product struct {
-	Id          string
+	Id          uuid.UUID
 	Name        string
 	Description string
 	Category    string
@@ -13,5 +17,5 @@ type Product struct {
 
 type Repository interface {
 	Search(search string, category string) (*[]Product, error)
-	Delete(id string) error
+	Delete(id uuid.UUID) error
 }

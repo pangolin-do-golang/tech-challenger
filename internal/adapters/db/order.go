@@ -2,9 +2,10 @@ package db
 
 import (
 	"fmt"
+
+	"github.com/google/uuid"
 	"github.com/pangolin-do-golang/tech-challenge/internal/application/order"
 	"gorm.io/gorm"
-	"time"
 )
 
 type PostgresOrderRepository struct {
@@ -12,10 +13,9 @@ type PostgresOrderRepository struct {
 }
 
 type OrderPostgres struct {
-	Id          string    `gorm:"id"`
-	CreatedAt   time.Time `gorm:"created_at"`
-	TotalAmount float64   `gorm:"total_amount"`
-	Status      string    `gorm:"status"`
+	BaseModel
+	TotalAmount float64 `gorm:"total_amount"`
+	Status      string  `gorm:"status"`
 }
 
 func (op OrderPostgres) TableName() string {
@@ -26,7 +26,7 @@ func NewPostgresOrderRepository(db *gorm.DB) order.Repository {
 	return &PostgresOrderRepository{db: db}
 }
 
-func (repo *PostgresOrderRepository) Get(id string) (*order.Order, error) {
+func (repo *PostgresOrderRepository) Get(id uuid.UUID) (*order.Order, error) {
 	var dbOrder OrderPostgres
 
 	if err := repo.db.First(&dbOrder, "id = ?", id).Error; err != nil {
@@ -36,7 +36,7 @@ func (repo *PostgresOrderRepository) Get(id string) (*order.Order, error) {
 	}
 
 	return &order.Order{
-		Id:          dbOrder.Id,
+		Id:          dbOrder.ID,
 		CreatedAt:   dbOrder.CreatedAt,
 		TotalAmount: dbOrder.TotalAmount,
 		Status:      dbOrder.Status,

@@ -1,7 +1,9 @@
 package customer
 
+import "github.com/google/uuid"
+
 type Customer struct {
-	Id    uint
+	Id    uuid.UUID
 	Name  string
 	Cpf   string
 	Email string
@@ -10,16 +12,16 @@ type Customer struct {
 
 type IService interface {
 	Create(customer Customer) (*Customer, error)
-	Update(customerId uint, customer Customer) (*Customer, error)
-	Delete(customerId uint) error
+	Update(customerId uuid.UUID, customer Customer) (*Customer, error)
+	Delete(customerId uuid.UUID) error
 	GetAll() ([]Customer, error)
 	GetByCpf(customerCpf string) (*Customer, error)
 }
 
 type IRepository interface {
 	Create(customer Customer) (*Customer, error)
-	Update(customerId uint, customer Customer) (*Customer, error)
-	Delete(customerId uint) error
+	Update(customerId uuid.UUID, customer Customer) (*Customer, error)
+	Delete(customerId uuid.UUID) error
 	GetAll() ([]Customer, error)
 	GetByCpf(customerCpf string) (*Customer, error)
 }

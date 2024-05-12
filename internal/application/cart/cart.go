@@ -1,35 +1,39 @@
 package cart
 
-import "context"
+import (
+	"context"
+
+	"github.com/google/uuid"
+)
 
 type Cart struct {
-	ID       string
-	ClientID string
+	ID       uuid.UUID
+	ClientID uuid.UUID
 	products []Product
 }
 
 type Product struct {
-	ClientID  string
-	ProductID string
+	ClientID  uuid.UUID
+	ProductID uuid.UUID
 	Quantity  int
 	Comments  string
 }
 
 type ICartRepository interface {
-	Create(clientID string) (*Cart, error)
-	Get(clientID string) (*Cart, error)
+	Create(clientID uuid.UUID) (*Cart, error)
+	Get(clientID uuid.UUID) (*Cart, error)
 }
 
 type ICartProductRepository interface {
-	Create(ctx context.Context, cartID string, product *Product) error
-	GetByCartID(ctx context.Context, cartID string) ([]*Product, error)
-	DeleteByProductID(ctx context.Context, cartID, productID string) error
-	UpdateProductByProductID(ctx context.Context, cartID, productID string, product *Product) error
+	Create(ctx context.Context, cartID uuid.UUID, product *Product) error
+	GetByCartID(ctx context.Context, cartID uuid.UUID) ([]*Product, error)
+	DeleteByProductID(ctx context.Context, cartID, productID uuid.UUID) error
+	UpdateProductByProductID(ctx context.Context, cartID, productID uuid.UUID, product *Product) error
 }
 
 type IService interface {
-	LoadCart(ctx context.Context, clientID string) (*Cart, error)
+	LoadCart(ctx context.Context, clientID uuid.UUID) (*Cart, error)
 	AddProduct(ctx context.Context, product *Product) error
-	RemoveProduct(ctx context.Context, clientID string, productID string) error
+	RemoveProduct(ctx context.Context, clientID uuid.UUID, productID uuid.UUID) error
 	EditProduct(ctx context.Context, product *Product) error
 }

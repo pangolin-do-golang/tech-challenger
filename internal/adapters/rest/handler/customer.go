@@ -6,10 +6,6 @@ import (
 	"github.com/pangolin-do-golang/tech-challenge/internal/application/customer"
 )
 
-type CustomerHandler struct {
-	service *customer.IService
-}
-
 func RegisterCustomerHandlers(router *gin.Engine, service customer.IService) {
 	customerController := controller.NewCustomerController(service)
 

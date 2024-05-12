@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+
 	"github.com/google/uuid"
 	"github.com/pangolin-do-golang/tech-challenge/internal/application/cart"
 	"gorm.io/gorm"
@@ -12,16 +13,15 @@ type PostgresCartProductsRepository struct {
 }
 
 type CartProductsPostgres struct {
-	ID        string `gorm:"id"`
-	CartID    string `gorm:"cart_id"`
-	ProductID string `gorm:"product_id"`
-	Quantity  int    `gorm:"quantity"`
-	Comments  string `gorm:"comments"`
+	BaseModel
+	CartID    uuid.UUID `gorm:"type:uuid" json:"cart_id"`
+	ProductID uuid.UUID `gorm:"type:uuid" json:"product_id"`
+	Quantity  int       `gorm:"quantity"`
+	Comments  string    `gorm:"comments"`
 }
 
-func (p *PostgresCartProductsRepository) Create(ctx context.Context, cartID string, product *cart.Product) error {
+func (p *PostgresCartProductsRepository) Create(ctx context.Context, cartID uuid.UUID, product *cart.Product) error {
 	cartProduct := CartProductsPostgres{
-		ID:        uuid.New().String(),
 		CartID:    cartID,
 		ProductID: product.ProductID,
 		Quantity:  product.Quantity,
@@ -36,7 +36,7 @@ func (p *PostgresCartProductsRepository) Create(ctx context.Context, cartID stri
 	return nil
 }
 
-func (p *PostgresCartProductsRepository) GetByCartID(ctx context.Context, cartID string) ([]*cart.Product, error) {
+func (p *PostgresCartProductsRepository) GetByCartID(ctx context.Context, cartID uuid.UUID) ([]*cart.Product, error) {
 	var cartProducts []CartProductsPostgres
 	err := p.db.Where("cart_id = ?", cartID).Find(&cartProducts).Error
 	if err != nil {
@@ -55,11 +55,11 @@ func (p *PostgresCartProductsRepository) GetByCartID(ctx context.Context, cartID
 	return products, nil
 }
 
-func (p *PostgresCartProductsRepository) DeleteByProductID(ctx context.Context, cartID, productID string) error {
+func (p *PostgresCartProductsRepository) DeleteByProductID(ctx context.Context, cartID, productID uuid.UUID) error {
 	return p.db.Delete(&CartProductsPostgres{}, "cart_id = ? AND product_id = ?", cartID, productID).Error
 }
 
-func (p *PostgresCartProductsRepository) UpdateProductByProductID(ctx context.Context, cartID, productID string, product *cart.Product) error {
+func (p *PostgresCartProductsRepository) UpdateProductByProductID(ctx context.Context, cartID, productID uuid.UUID, product *cart.Product) error {
 	return p.db.Model(&CartProductsPostgres{}).
 		Where("cart_id = ? AND product_id = ?", cartID, productID).
 		Updates(map[string]interface{}{

@@ -3,6 +3,7 @@ package db
 import (
 	"errors"
 
+	"github.com/google/uuid"
 	"github.com/pangolin-do-golang/tech-challenge/internal/application/customer"
 	"github.com/pangolin-do-golang/tech-challenge/internal/domainerrors"
 	"gorm.io/gorm"
@@ -13,9 +14,9 @@ type PostgresCustomerRepository struct {
 }
 
 type CustomerPostgres struct {
-	gorm.Model
+	BaseModel
 	Name  string `gorm:"name"`
-	Cpf   string `gorm:"cpf"`
+	Cpf   string `gorm:"uniqueIndex" json:"cpf"`
 	Email string `gorm:"email"`
 	Age   int    `gorm:"age"`
 }
@@ -49,7 +50,7 @@ func (r *PostgresCustomerRepository) Create(cust customer.Customer) (*customer.C
 	}, nil
 }
 
-func (r *PostgresCustomerRepository) Update(customerId uint, cust customer.Customer) (*customer.Customer, error) {
+func (r *PostgresCustomerRepository) Update(customerId uuid.UUID, cust customer.Customer) (*customer.Customer, error) {
 	var record CustomerPostgres
 	err := r.db.First(&record, customerId).Error
 
@@ -79,7 +80,7 @@ func (r *PostgresCustomerRepository) Update(customerId uint, cust customer.Custo
 	}, nil
 }
 
-func (r *PostgresCustomerRepository) Delete(customerId uint) error {
+func (r *PostgresCustomerRepository) Delete(customerId uuid.UUID) error {
 	var record CustomerPostgres
 	err := r.db.Delete(&record, customerId).Error
 

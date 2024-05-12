@@ -3,6 +3,8 @@ package cart
 import (
 	"context"
 	"errors"
+
+	"github.com/google/uuid"
 	"github.com/pangolin-do-golang/tech-challenge/internal/domainerrors"
 )
 
@@ -18,7 +20,7 @@ func NewService(cartRepository ICartRepository, cartProductsRepository ICartProd
 	}
 }
 
-func (s *Service) LoadCart(ctx context.Context, clientID string) (*Cart, error) {
+func (s *Service) LoadCart(ctx context.Context, clientID uuid.UUID) (*Cart, error) {
 	cart, err := s.CartRepository.Get(clientID)
 	if err != nil {
 		if !errors.Is(err, domainerrors.ErrRecordNotFound) {
@@ -45,7 +47,7 @@ func (s *Service) AddProduct(ctx context.Context, product *Product) error {
 	return s.CartProductsRepository.Create(ctx, cart.ID, product)
 }
 
-func (s *Service) RemoveProduct(ctx context.Context, clientID string, productID string) error {
+func (s *Service) RemoveProduct(ctx context.Context, clientID uuid.UUID, productID uuid.UUID) error {
 	cart, err := s.LoadCart(ctx, clientID)
 	if err != nil {
 		return err

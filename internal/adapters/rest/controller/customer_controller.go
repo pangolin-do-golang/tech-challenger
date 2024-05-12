@@ -2,9 +2,9 @@ package controller
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/pangolin-do-golang/tech-challenge/internal/application/customer"
 )
 
@@ -13,10 +13,10 @@ type CustomerController struct {
 }
 
 type CustomerPayload struct {
-	Name  string `json:"name" validate:"required,min=5,max=20"`
-	Cpf   string `json:"cpf" validate:"required,numeric,len=11"`
-	Email string `json:"email" validate:"required,email"`
-	Age   int    `json:"age" validate:"gte=18,lte=120"`
+	Name  string `json:"name" binding:"required,min=5,max=20"`
+	Cpf   string `json:"cpf" binding:"required,numeric,len=11"`
+	Email string `json:"email" binding:"required,email"`
+	Age   int    `json:"age" binding:"gte=18,lte=120"`
 }
 
 func NewCustomerController(service customer.IService) *CustomerController {
@@ -29,14 +29,11 @@ func NewCustomerController(service customer.IService) *CustomerController {
 // @Summary Create customer
 // @Description Create a new customer
 // @Tags Customer
-// @Param name body string true "Name example"
-// @Param cpf body string true "03985594051"
-// @Param email body string true "example@example.com"
-// @Param age body int true "18"
-// @Accept  json
-// @Produce  json
-// @Success 200 object customer.Customer "customer.Customer"
-// @Failure 400 "Invalid cpf"
+// @Param payload body controller.CustomerPayload true "CustomerPayload"
+// @Accept json
+// @Produce json
+// @Success 200 {object} customer.Customer "customer.Customer"
+// @Failure 400 {object} map[string]any "{\"error\": \"Invalid CPF\"}"
 // @Router /customer [post]
 func (ctrl CustomerController) Create(c *gin.Context) {
 	var payload CustomerPayload
@@ -71,19 +68,15 @@ func (ctrl CustomerController) Create(c *gin.Context) {
 // @Summary Update customer
 // @Description Update a customer by id
 // @Tags Customer
-// @Param id path uint true "123456789"
-// @Param name body string true "Name example"
-// @Param cpf body string true "03985594051"
-// @Param email body string true "example@example.com"
-// @Param age body int true "18"
-// @Accept  json
-// @Produce  json
-// @Success 200 object customer.Customer "customer.Customer"
-// @Failure 400 "Invalid identifier informed"
-// @Router /customer/:id [put]
+// @Param id path string true "ID of the customer"
+// @Param payload body controller.CustomerPayload true "CustomerPayload"
+// @Accept json
+// @Produce json
+// @Success 200 {object} customer.Customer "customer.Customer"
+// @Failure 400 {object} map[string]any "{\"error\": \"Invalid CPF\"}"
+// @Router /customer/{id} [put]
 func (ctrl CustomerController) Update(c *gin.Context) {
-	id := c.Param("id")
-	parsedId, err := strconv.ParseUint(id, 10, 64)
+	id, err := uuid.Parse(c.Param("id"))
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -103,7 +96,7 @@ func (ctrl CustomerController) Update(c *gin.Context) {
 		return
 	}
 
-	updated, err := ctrl.service.Update(uint(parsedId), customer.Customer{
+	updated, err := ctrl.service.Update(id, customer.Customer{
 		Name:  payload.Name,
 		Cpf:   payload.Cpf,
 		Email: payload.Email,
@@ -125,15 +118,14 @@ func (ctrl CustomerController) Update(c *gin.Context) {
 // @Summary Delete customer
 // @Description Delete a customer by id
 // @Tags Customer
-// @Param id path uint true "123456789"
+// @Param id path string true "123456789"
 // @Accept  json
 // @Produce  json
 // @Success 200
 // @Failure 400 "Invalid identifier informed"
-// @Router /customer/:id [delete]
+// @Router /customer/{id} [delete]
 func (ctrl CustomerController) Delete(c *gin.Context) {
-	id := c.Param("id")
-	parsedId, err := strconv.ParseUint(id, 10, 64)
+	id, err := uuid.Parse(c.Param("id"))
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -143,7 +135,7 @@ func (ctrl CustomerController) Delete(c *gin.Context) {
 		return
 	}
 
-	if err := ctrl.service.Delete(uint(parsedId)); err != nil {
+	if err := ctrl.service.Delete(id); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
@@ -185,7 +177,7 @@ func (ctrl CustomerController) GetAll(c *gin.Context) {
 // @Produce json
 // @Success 200 {object} customer.Customer{}
 // @Failure 404 "Customer not found"
-// @Router /customer/:cpf [get]
+// @Router /customer/{cpf} [get]
 func (ctrl CustomerController) GetByCpf(c *gin.Context) {
 	cpf := c.Param("cpf")
 
@@ -199,7 +191,7 @@ func (ctrl CustomerController) GetByCpf(c *gin.Context) {
 		return
 	}
 
-	if customerRecord.Id == 0 {
+	if customerRecord.Id == uuid.Nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"NotFound": "Customer not found.",
 		})
