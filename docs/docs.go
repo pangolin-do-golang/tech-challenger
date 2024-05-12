@@ -54,39 +54,12 @@ const docTemplate = `{
                 "summary": "Create customer",
                 "parameters": [
                     {
-                        "description": "Name example",
-                        "name": "name",
+                        "description": "CustomerPayload",
+                        "name": "payload",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "03985594051",
-                        "name": "cpf",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "example@example.com",
-                        "name": "email",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "18",
-                        "name": "age",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
+                            "$ref": "#/definitions/controller.CustomerPayload"
                         }
                     }
                 ],
@@ -98,12 +71,16 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Invalid cpf"
+                        "description": "{\\\"error\\\": \\\"Invalid CPF\\\"}",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
                     }
                 }
             }
         },
-        "/customer/:cpf": {
+        "/customer/{cpf}": {
             "get": {
                 "description": "Get a customer by cpf",
                 "consumes": [
@@ -138,7 +115,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/customer/:id": {
+        "/customer/{id}": {
             "put": {
                 "description": "Update a customer by id",
                 "consumes": [
@@ -153,46 +130,19 @@ const docTemplate = `{
                 "summary": "Update customer",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "123456789",
+                        "type": "string",
+                        "description": "ID of the customer",
                         "name": "id",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "description": "Name example",
-                        "name": "name",
+                        "description": "CustomerPayload",
+                        "name": "payload",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "03985594051",
-                        "name": "cpf",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "example@example.com",
-                        "name": "email",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "18",
-                        "name": "age",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
+                            "$ref": "#/definitions/controller.CustomerPayload"
                         }
                     }
                 ],
@@ -204,7 +154,11 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Invalid identifier informed"
+                        "description": "{\\\"error\\\": \\\"Invalid CPF\\\"}",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
                     }
                 }
             },
@@ -222,7 +176,7 @@ const docTemplate = `{
                 "summary": "Delete customer",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "123456789",
                         "name": "id",
                         "in": "path",
@@ -273,6 +227,32 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "controller.CustomerPayload": {
+            "type": "object",
+            "required": [
+                "cpf",
+                "email",
+                "name"
+            ],
+            "properties": {
+                "age": {
+                    "type": "integer",
+                    "maximum": 120,
+                    "minimum": 18
+                },
+                "cpf": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 20,
+                    "minLength": 5
+                }
+            }
+        },
         "customer.Customer": {
             "type": "object",
             "properties": {
@@ -286,7 +266,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"

@@ -1,5 +1,24 @@
 basePath: /
 definitions:
+  controller.CustomerPayload:
+    properties:
+      age:
+        maximum: 120
+        minimum: 18
+        type: integer
+      cpf:
+        type: string
+      email:
+        type: string
+      name:
+        maxLength: 20
+        minLength: 5
+        type: string
+    required:
+    - cpf
+    - email
+    - name
+    type: object
   customer.Customer:
     properties:
       age:
@@ -9,7 +28,7 @@ definitions:
       email:
         type: string
       id:
-        type: integer
+        type: string
       name:
         type: string
     type: object
@@ -53,30 +72,12 @@ paths:
       - application/json
       description: Create a new customer
       parameters:
-      - description: Name example
+      - description: CustomerPayload
         in: body
-        name: name
+        name: payload
         required: true
         schema:
-          type: string
-      - description: "03985594051"
-        in: body
-        name: cpf
-        required: true
-        schema:
-          type: string
-      - description: example@example.com
-        in: body
-        name: email
-        required: true
-        schema:
-          type: string
-      - description: "18"
-        in: body
-        name: age
-        required: true
-        schema:
-          type: integer
+          $ref: '#/definitions/controller.CustomerPayload'
       produces:
       - application/json
       responses:
@@ -85,11 +86,14 @@ paths:
           schema:
             $ref: '#/definitions/customer.Customer'
         "400":
-          description: Invalid cpf
+          description: '{\"error\": \"Invalid CPF\"}'
+          schema:
+            additionalProperties: true
+            type: object
       summary: Create customer
       tags:
       - Customer
-  /customer/:cpf:
+  /customer/{cpf}:
     get:
       consumes:
       - application/json
@@ -112,7 +116,7 @@ paths:
       summary: Get customer by cpf
       tags:
       - Customer
-  /customer/:id:
+  /customer/{id}:
     delete:
       consumes:
       - application/json
@@ -122,7 +126,7 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
@@ -138,35 +142,17 @@ paths:
       - application/json
       description: Update a customer by id
       parameters:
-      - description: "123456789"
+      - description: ID of the customer
         in: path
         name: id
         required: true
-        type: integer
-      - description: Name example
+        type: string
+      - description: CustomerPayload
         in: body
-        name: name
+        name: payload
         required: true
         schema:
-          type: string
-      - description: "03985594051"
-        in: body
-        name: cpf
-        required: true
-        schema:
-          type: string
-      - description: example@example.com
-        in: body
-        name: email
-        required: true
-        schema:
-          type: string
-      - description: "18"
-        in: body
-        name: age
-        required: true
-        schema:
-          type: integer
+          $ref: '#/definitions/controller.CustomerPayload'
       produces:
       - application/json
       responses:
@@ -175,7 +161,10 @@ paths:
           schema:
             $ref: '#/definitions/customer.Customer'
         "400":
-          description: Invalid identifier informed
+          description: '{\"error\": \"Invalid CPF\"}'
+          schema:
+            additionalProperties: true
+            type: object
       summary: Update customer
       tags:
       - Customer
