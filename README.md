@@ -1,3 +1,5 @@
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=pangolin-do-golang_tech-challenge&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=pangolin-do-golang_tech-challenge) ![Known Vulnerabilities](https://snyk.io/test/github/pcbarretos/pangolin-do-golang/tech-challenge/badge.svg)
+
 # Tech Challenge
 
 ## Install
@@ -94,3 +96,9 @@ Follow the steps described in the [official documentation](https://github.com/sw
 ### Access the documentation
 
 The documentation can be founded at the path `/docs/swagger.yaml` or accessing this [link](./docs/swagger.yaml).
+
+## Infrastructure
+
+
+[Requierments Infrastructure](https://github.com/pangolin-do-golang/tech-challenge/blob/main/terraform/README.md)
+
