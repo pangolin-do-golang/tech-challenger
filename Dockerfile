@@ -1,4 +1,4 @@
-# 1 - Build Stage
+# Stage 1: Build
 FROM golang:1.22.3-alpine AS builder
 
 # Set the working directory inside the container
@@ -16,8 +16,21 @@ COPY . .
 # Build the Go application
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o web cmd/rest/main.go
 
-# 2 - Runtime Stage
-FROM scratch
+# Stage 2: Create non-root user in a complete image
+FROM alpine:3.19.1 as security_provider
+
+# Create a non-root group and user
+RUN addgroup -S nonroot \
+    && adduser -S nonroot -G nonroot
+
+# Stage 3: Run in a scratch image
+FROM scratch as production
+
+# Copy the /etc/passwd file from the previous stage
+COPY --from=security_provider /etc/passwd /etc/passwd
+
+# Set the non-root user
+USER nonroot
 
 # Copy only the binary from the build stage to the final image
 COPY --from=builder /app/web /
