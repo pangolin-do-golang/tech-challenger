@@ -219,7 +219,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/order/{cpf}": {
+        "/order/{id}": {
             "get": {
                 "description": "Get a order by ID",
                 "consumes": [

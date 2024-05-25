@@ -185,7 +185,7 @@ paths:
       summary: Get order list
       tags:
       - Order
-  /order/{cpf}:
+  /order/{id}:
     get:
       consumes:
       - application/json
