@@ -3,15 +3,19 @@ package order
 import "github.com/google/uuid"
 
 type Service struct {
-	repo Repository
+	repository IRepository
 }
 
-func NewOrderService(repo Repository) *Service {
+func NewOrderService(orderRepository IRepository) *Service {
 	return &Service{
-		repo: repo,
+		repository: orderRepository,
 	}
 }
 
 func (s *Service) Get(id uuid.UUID) (*Order, error) {
-	return s.repo.Get(id)
+	return s.repository.Get(id)
+}
+
+func (s *Service) GetAll() ([]Order, error) {
+	return s.repository.GetAll()
 }

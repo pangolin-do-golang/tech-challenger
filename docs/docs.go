@@ -193,9 +193,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/order/:id": {
+        "/order": {
             "get": {
-                "description": "Get order by ID",
+                "description": "Get all order's list",
                 "consumes": [
                     "application/json"
                 ],
@@ -203,13 +203,39 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "order Routes"
+                    "Order"
+                ],
+                "summary": "Get order list",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/order.Order"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/order/{cpf}": {
+            "get": {
+                "description": "Get a order by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order"
                 ],
                 "summary": "Get order by ID",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Order ID",
+                        "description": "ID of the order",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -220,6 +246,13 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/order.Order"
+                        }
+                    },
+                    "400": {
+                        "description": "{\\\"error\\\": \\Invalid identifier informed\\\"}",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
                         }
                     }
                 }

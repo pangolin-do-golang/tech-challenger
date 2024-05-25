@@ -168,13 +168,30 @@ paths:
       summary: Update customer
       tags:
       - Customer
-  /order/:id:
+  /order:
     get:
       consumes:
       - application/json
-      description: Get order by ID
+      description: Get all order's list
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/order.Order'
+            type: array
+      summary: Get order list
+      tags:
+      - Order
+  /order/{cpf}:
+    get:
+      consumes:
+      - application/json
+      description: Get a order by ID
       parameters:
-      - description: Order ID
+      - description: ID of the order
         in: path
         name: id
         required: true
@@ -186,7 +203,12 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/order.Order'
+        "400":
+          description: '{\"error\": \Invalid identifier informed\"}'
+          schema:
+            additionalProperties: true
+            type: object
       summary: Get order by ID
       tags:
-      - order Routes
+      - Order
 swagger: "2.0"
