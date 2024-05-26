@@ -34,6 +34,8 @@ definitions:
     type: object
   order.Order:
     properties:
+      clientID:
+        type: string
       createdAt:
         type: string
       id:
@@ -183,6 +185,25 @@ paths:
               $ref: '#/definitions/order.Order'
             type: array
       summary: Get order list
+      tags:
+      - Order
+    post:
+      consumes:
+      - application/json
+      description: Create order from Cart
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/order.Order'
+        "500":
+          description: '{\"error\": \Internal Server Error\"}'
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create order from Cart
       tags:
       - Order
   /order/{id}:

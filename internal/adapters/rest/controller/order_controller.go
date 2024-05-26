@@ -77,10 +77,11 @@ func (ctrl OrderController) Get(c *gin.Context) {
 // Create Order godoc
 // @Summary Create order from Cart
 // @Description Create order from Cart
-// @Tags order Routes
+// @Tags Order
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} order.Order{}
+// @Failure 500 {object} map[string]any "{\"error\": \Internal Server Error\"}"
 // @Router /order [post]
 func (ctrl OrderController) Create(c *gin.Context) {
 	type Payload struct {
