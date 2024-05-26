@@ -13,6 +13,19 @@ type PostgresCartRepository struct {
 	db *gorm.DB
 }
 
+type CartPostgres struct {
+	BaseModel
+	ClientID uuid.UUID `gorm:"type:uuid" json:"client_id"`
+}
+
+func (op CartPostgres) TableName() string {
+	return "cart"
+}
+
+func NewPostgresCartRepository(db *gorm.DB) cart.ICartRepository {
+	return &PostgresCartRepository{db: db}
+}
+
 func (p *PostgresCartRepository) Create(clientID uuid.UUID) (*cart.Cart, error) {
 	record := &CartPostgres{
 		ClientID: clientID,
@@ -44,17 +57,4 @@ func (p *PostgresCartRepository) Get(clientID uuid.UUID) (*cart.Cart, error) {
 		ID:       row.ID,
 		ClientID: row.ClientID,
 	}, nil
-}
-
-type CartPostgres struct {
-	BaseModel
-	ClientID uuid.UUID `gorm:"type:uuid" json:"client_id"`
-}
-
-func (op CartPostgres) TableName() string {
-	return "cart"
-}
-
-func NewPostgresCartRepository(db *gorm.DB) cart.ICartRepository {
-	return &PostgresCartRepository{db: db}
 }

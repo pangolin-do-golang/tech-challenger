@@ -19,3 +19,7 @@ func (s *Service) Search(search string, category string) (*[]Product, error) {
 func (s *Service) Delete(id uuid.UUID) error {
 	return s.repo.Delete(id)
 }
+
+func (s *Service) GetByID(id uuid.UUID) (*Product, error) {
+	return s.repo.GetByID(id)
+}

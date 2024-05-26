@@ -9,10 +9,10 @@ import (
 )
 
 type OrderController struct {
-	service order.IService
+	service order.IOrderService
 }
 
-func NewOrderController(service order.IService) *OrderController {
+func NewOrderController(service order.IOrderService) *OrderController {
 	return &OrderController{
 		service: service,
 	}
@@ -30,7 +30,7 @@ func (ctrl OrderController) GetAll(c *gin.Context) {
 	orderSlice, err := ctrl.service.GetAll()
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
 
@@ -61,9 +61,35 @@ func (ctrl OrderController) Get(c *gin.Context) {
 		return
 	}
 
-	order, err := ctrl.service.Get(id)
+	o, err := ctrl.service.Get(id)
 
 	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+
+		return
+	}
+
+	c.JSON(http.StatusOK, o)
+}
+
+// Create Order godoc
+// @Summary Create order from Cart
+// @Description Create order from Cart
+// @Tags order Routes
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} order.Order{}
+// @Router /order [post]
+func (ctrl OrderController) Create(c *gin.Context) {
+	type Payload struct {
+		ClientID uuid.UUID `json:"client_id" binding:"required"`
+	}
+
+	payload := &Payload{}
+
+	if err := c.ShouldBindJSON(&payload); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
@@ -71,5 +97,14 @@ func (ctrl OrderController) Get(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, order)
+	o, err := ctrl.service.Create(payload.ClientID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+
+		return
+	}
+
+	c.JSON(http.StatusOK, o)
 }

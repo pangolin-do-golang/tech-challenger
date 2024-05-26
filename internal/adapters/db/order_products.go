@@ -2,33 +2,41 @@ package db
 
 import (
 	"context"
+	"github.com/pangolin-do-golang/tech-challenge/internal/application/order"
 
 	"github.com/google/uuid"
-	"github.com/pangolin-do-golang/tech-challenge/internal/application/cart"
 	"gorm.io/gorm"
 )
 
-type PostgresCartProductsRepository struct {
+type PostgresOrderProductsRepository struct {
 	db *gorm.DB
 }
 
-type CartProductsPostgres struct {
+type OrderProductPostgres struct {
 	BaseModel
-	CartID    uuid.UUID `gorm:"type:uuid" json:"cart_id"`
+	OrderID   uuid.UUID `gorm:"type:uuid" json:"order_id"`
 	ProductID uuid.UUID `gorm:"type:uuid" json:"product_id"`
 	Quantity  int       `gorm:"quantity"`
 	Comments  string    `gorm:"comments"`
 }
 
-func (p *PostgresCartProductsRepository) Create(ctx context.Context, cartID uuid.UUID, product *cart.Product) error {
-	cartProduct := CartProductsPostgres{
-		CartID:    cartID,
+func (op *OrderProductPostgres) TableName() string {
+	return "order_products"
+}
+
+func NewPostgresOrderProductsRepository(db *gorm.DB) order.IOrderProductRepository {
+	return &PostgresOrderProductsRepository{db: db}
+}
+
+func (p *PostgresOrderProductsRepository) Create(ctx context.Context, orderID uuid.UUID, product *order.Product) error {
+	orderProduct := OrderProductPostgres{
+		OrderID:   orderID,
 		ProductID: product.ProductID,
 		Quantity:  product.Quantity,
 		Comments:  product.Comments,
 	}
 
-	result := p.db.Create(&cartProduct)
+	result := p.db.Create(&orderProduct)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -36,16 +44,16 @@ func (p *PostgresCartProductsRepository) Create(ctx context.Context, cartID uuid
 	return nil
 }
 
-func (p *PostgresCartProductsRepository) GetByCartID(ctx context.Context, cartID uuid.UUID) ([]*cart.Product, error) {
-	var cartProducts []CartProductsPostgres
-	err := p.db.Where("cart_id = ?", cartID).Find(&cartProducts).Error
+func (p *PostgresOrderProductsRepository) GetByOrderID(ctx context.Context, cartID uuid.UUID) ([]*order.Product, error) {
+	var cartProducts []OrderProductPostgres
+	err := p.db.Where("order_id = ?", cartID).Find(&cartProducts).Error
 	if err != nil {
 		return nil, err
 	}
 
-	var products []*cart.Product
+	var products []*order.Product
 	for _, cp := range cartProducts {
-		products = append(products, &cart.Product{
+		products = append(products, &order.Product{
 			ProductID: cp.ProductID,
 			Quantity:  cp.Quantity,
 			Comments:  cp.Comments,
@@ -53,25 +61,4 @@ func (p *PostgresCartProductsRepository) GetByCartID(ctx context.Context, cartID
 	}
 
 	return products, nil
-}
-
-func (p *PostgresCartProductsRepository) DeleteByProductID(ctx context.Context, cartID, productID uuid.UUID) error {
-	return p.db.Delete(&CartProductsPostgres{}, "cart_id = ? AND product_id = ?", cartID, productID).Error
-}
-
-func (p *PostgresCartProductsRepository) UpdateProductByProductID(ctx context.Context, cartID, productID uuid.UUID, product *cart.Product) error {
-	return p.db.Model(&CartProductsPostgres{}).
-		Where("cart_id = ? AND product_id = ?", cartID, productID).
-		Updates(map[string]interface{}{
-			"quantity": product.Quantity,
-			"comments": product.Comments,
-		}).Error
-}
-
-func (op *CartProductsPostgres) TableName() string {
-	return "cart_products"
-}
-
-func NewPostgresCartProductsRepository(db *gorm.DB) cart.ICartProductRepository {
-	return &PostgresCartProductsRepository{db: db}
 }

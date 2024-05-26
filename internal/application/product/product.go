@@ -18,4 +18,5 @@ type Product struct {
 type Repository interface {
 	Search(search string, category string) (*[]Product, error)
 	Delete(id uuid.UUID) error
+	GetByID(id uuid.UUID) (*Product, error)
 }

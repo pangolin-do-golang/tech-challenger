@@ -13,14 +13,14 @@ import (
 )
 
 type RestServer struct {
-	orderService    *order.Service
+	orderService    order.IOrderService
 	productService  *product.Service
 	cartService     cart.IService
 	customerService customer.IService
 }
 
 type RestServerOptions struct {
-	OrderService    *order.Service
+	OrderService    order.IOrderService
 	ProductService  *product.Service
 	CartService     cart.IService
 	CustomerService customer.IService
