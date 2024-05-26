@@ -13,6 +13,12 @@ type Order struct {
 	Status      string
 }
 
-type Repository interface {
+type IService interface {
 	Get(id uuid.UUID) (*Order, error)
+	GetAll() ([]Order, error)
+}
+
+type IRepository interface {
+	Get(id uuid.UUID) (*Order, error)
+	GetAll() ([]Order, error)
 }
