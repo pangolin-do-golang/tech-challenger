@@ -20,7 +20,7 @@ func NewService(cartRepository ICartRepository, cartProductsRepository ICartProd
 	}
 }
 
-func (s *Service) LoadCart(ctx context.Context, clientID uuid.UUID) (*Cart, error) {
+func (s *Service) LoadCart(_ context.Context, clientID uuid.UUID) (*Cart, error) {
 	cart, err := s.CartRepository.Get(clientID)
 	if err != nil {
 		if !errors.Is(err, domainerrors.ErrRecordNotFound) {

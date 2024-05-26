@@ -25,7 +25,7 @@ func NewCustomerController(service customer.IService) *CustomerController {
 	}
 }
 
-// Create Create a new customer
+// Create a new customer
 // @Summary Create customer
 // @Description Create a new customer
 // @Tags Customer
@@ -64,7 +64,7 @@ func (ctrl CustomerController) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, created)
 }
 
-// Update Update a customer by id
+// Update a customer by id
 // @Summary Update customer
 // @Description Update a customer by id
 // @Tags Customer
@@ -114,7 +114,7 @@ func (ctrl CustomerController) Update(c *gin.Context) {
 	c.JSON(http.StatusCreated, updated)
 }
 
-// Delete Delete a customer by id
+// Delete a customer by id
 // @Summary Delete customer
 // @Description Delete a customer by id
 // @Tags Customer

@@ -6,7 +6,7 @@
 
 ### Go 
 
-- [Go Instalation](https://go.dev/doc/install)
+- [Go Installation](https://go.dev/doc/install)
 
 > Make sure you have Go 1.22.2 or higher
 
@@ -55,7 +55,7 @@ curl --request GET --url http://localhost:8080/status
 
 - [Go](https://go.dev/)
 - [Gin Web Framework](https://gin-gonic.com/) - Routes, JSON validation, Error management, Middleware support
-- [PostgreSQL](https://www.postgresql.org/) - Database
+- [PostgresSQL](https://www.postgresql.org/) - Database
 - [swag](https://github.com/swaggo/swag) - Tool to generate swagger documentation
 - [docker](https://www.docker.com/) - Containerization tool
 - [docker-compose](https://docs.docker.com/compose/) - Tool to define and run multi-container Docker applications
@@ -100,5 +100,5 @@ The documentation can be founded at the path `/docs/swagger.yaml` or accessing t
 ## Infrastructure
 
 
-[Requierments Infrastructure](https://github.com/pangolin-do-golang/tech-challenge/blob/main/terraform/README.md)
+[Requirements Infrastructure](https://github.com/pangolin-do-golang/tech-challenge/blob/main/terraform/README.md)
 
