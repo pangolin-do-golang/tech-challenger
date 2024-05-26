@@ -73,6 +73,7 @@ func (s *Service) Create(clientID uuid.UUID) (*Order, error) {
 	}
 
 	o.TotalAmount = total
+	o.Status = Status.Preparing
 	err = s.OrderRepository.Update(o)
 	if err != nil {
 		return nil, err

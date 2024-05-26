@@ -24,11 +24,13 @@ type Product struct {
 }
 
 var Status = struct {
-	Pending string
-	Created string
+	Pending   string
+	Created   string
+	Preparing string
 }{
-	Created: "CREATED",
-	Pending: "PENDING",
+	Created:   "CREATED",
+	Pending:   "PENDING",
+	Preparing: "PREPARING",
 }
 
 type IOrderService interface {
