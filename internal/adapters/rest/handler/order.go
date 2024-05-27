@@ -10,9 +10,10 @@ type OrderHandler struct {
 	service *order.Service
 }
 
-func RegisterOrderHandlers(router *gin.Engine, service *order.Service) {
+func RegisterOrderHandlers(router *gin.Engine, service order.IOrderService) {
 	orderController := controller.NewOrderController(service)
 
+	router.POST("/order", orderController.Create)
 	router.GET("/order", orderController.GetAll)
 	router.GET("/order/:id", orderController.Get)
 }

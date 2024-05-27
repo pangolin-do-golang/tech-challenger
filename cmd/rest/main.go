@@ -32,15 +32,16 @@ func main() {
 	customerRepository := dbAdapter.NewPostgresCustomerRepository(db)
 	customerService := customer.NewService(customerRepository)
 
-	orderRepository := dbAdapter.NewPostgresOrderRepository(db)
-	orderService := order.NewOrderService(orderRepository)
-
 	productRepository := dbAdapter.NewPostgresProductRepository(db)
 	productService := product.NewProductService(productRepository)
 
 	cartRepository := dbAdapter.NewPostgresCartRepository(db)
 	cartProductsRepository := dbAdapter.NewPostgresCartProductsRepository(db)
 	cartService := cart.NewService(cartRepository, cartProductsRepository)
+
+	orderRepository := dbAdapter.NewPostgresOrderRepository(db)
+	orderProductRepository := dbAdapter.NewPostgresOrderProductsRepository(db)
+	orderService := order.NewOrderService(orderRepository, orderProductRepository, cartService, productService)
 
 	restServer := server.NewRestServer(&server.RestServerOptions{
 		OrderService:    orderService,
@@ -66,13 +67,18 @@ func initDb() (*gorm.DB, error) {
 		log.Panic(err)
 	}
 
-	db.AutoMigrate(
+	err = db.AutoMigrate(
 		&dbAdapter.CustomerPostgres{},
 		&dbAdapter.ProductPostgres{},
 		&dbAdapter.OrderPostgres{},
 		&dbAdapter.CartPostgres{},
 		&dbAdapter.CartProductsPostgres{},
+		&dbAdapter.OrderPostgres{},
+		&dbAdapter.OrderProductPostgres{},
 	)
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	return db, nil
 }

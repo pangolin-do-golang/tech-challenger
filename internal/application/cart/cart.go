@@ -9,7 +9,7 @@ import (
 type Cart struct {
 	ID       uuid.UUID
 	ClientID uuid.UUID
-	products []Product
+	Products []*Product
 }
 
 type Product struct {
@@ -33,6 +33,7 @@ type ICartProductRepository interface {
 
 type IService interface {
 	LoadCart(ctx context.Context, clientID uuid.UUID) (*Cart, error)
+	GetFullCart(clientID uuid.UUID) (*Cart, error)
 	AddProduct(ctx context.Context, product *Product) error
 	RemoveProduct(ctx context.Context, clientID uuid.UUID, productID uuid.UUID) error
 	EditProduct(ctx context.Context, product *Product) error

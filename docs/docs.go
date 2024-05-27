@@ -217,6 +217,34 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "description": "Create order from Cart",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Create order from Cart",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/order.Order"
+                        }
+                    },
+                    "500": {
+                        "description": "{\\\"error\\\": \\Internal Server Error\\\"}",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
             }
         },
         "/order/{id}": {
@@ -309,6 +337,9 @@ const docTemplate = `{
         "order.Order": {
             "type": "object",
             "properties": {
+                "clientID": {
+                    "type": "string"
+                },
                 "createdAt": {
                     "type": "string"
                 },

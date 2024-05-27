@@ -13,6 +13,26 @@ type PostgresProductRepository struct {
 	db *gorm.DB
 }
 
+func (repo *PostgresProductRepository) GetByID(id uuid.UUID) (*product.Product, error) {
+	var dbRecord ProductPostgres
+
+	if err := repo.db.Where("id = ? and deleted_at is null", id).First(&dbRecord).Error; err != nil {
+		return nil, err
+	}
+
+	if dbRecord.ID == uuid.Nil {
+		return nil, nil
+	}
+
+	return &product.Product{
+		Id:          dbRecord.ID,
+		Name:        dbRecord.Name,
+		Description: dbRecord.Description,
+		Category:    dbRecord.Category,
+		Price:       dbRecord.Price,
+	}, nil
+}
+
 type ProductPostgres struct {
 	BaseModel
 	Name        string  `gorm:"name"`

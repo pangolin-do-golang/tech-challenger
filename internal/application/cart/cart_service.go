@@ -37,6 +37,22 @@ func (s *Service) LoadCart(ctx context.Context, clientID uuid.UUID) (*Cart, erro
 
 }
 
+func (s *Service) GetFullCart(clientID uuid.UUID) (*Cart, error) {
+	cart, err := s.CartRepository.Get(clientID)
+	if err != nil {
+		return nil, err
+	}
+
+	products, err := s.CartProductsRepository.GetByCartID(context.Background(), cart.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	cart.Products = products
+
+	return cart, nil
+}
+
 func (s *Service) AddProduct(ctx context.Context, product *Product) error {
 	cart, err := s.LoadCart(ctx, product.ClientID)
 	if err != nil {
