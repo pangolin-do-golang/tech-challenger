@@ -67,6 +67,7 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
+          output: 'dependency-results.sbom.json'
           github-pat: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Push docker image to Registry
