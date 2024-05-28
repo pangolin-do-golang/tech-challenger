@@ -3,18 +3,29 @@ definitions:
   controller.AddProductPayload:
     properties:
       client_id:
+        format: uuid
         type: string
       comments:
         type: string
       product_id:
+        format: uuid
         type: string
       quantity:
-        description: TODO validação de quantidade >= 0 / estoque
+        example: 1
+        minimum: 1
         type: integer
     required:
     - client_id
     - product_id
     - quantity
+    type: object
+  controller.CreateOrderPayload:
+    properties:
+      client_id:
+        format: uuid
+        type: string
+    required:
+    - client_id
     type: object
   controller.CustomerPayload:
     properties:
@@ -38,12 +49,15 @@ definitions:
   controller.EditProductPayload:
     properties:
       client_id:
+        format: uuid
         type: string
       comments:
         type: string
       product_id:
+        format: uuid
         type: string
       quantity:
+        example: 2
         type: integer
     required:
     - client_id
@@ -53,8 +67,10 @@ definitions:
   controller.RemoveProductPayload:
     properties:
       client_id:
+        format: uuid
         type: string
       product_id:
+        format: uuid
         type: string
     required:
     - client_id
@@ -301,6 +317,13 @@ paths:
       consumes:
       - application/json
       description: Create order from Cart
+      parameters:
+      - description: CreateOrderPayload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/controller.CreateOrderPayload'
       produces:
       - application/json
       responses:

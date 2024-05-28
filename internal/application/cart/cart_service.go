@@ -53,6 +53,23 @@ func (s *Service) GetFullCart(clientID uuid.UUID) (*Cart, error) {
 	return cart, nil
 }
 
+func (s *Service) Cleanup(clientID uuid.UUID) error {
+	cart, err := s.LoadCart(context.Background(), clientID)
+	if err != nil {
+		return err
+	}
+
+	products, err := s.CartProductsRepository.GetByCartID(context.Background(), cart.ID)
+	for _, p := range products {
+		err = s.CartProductsRepository.DeleteByProductID(context.Background(), cart.ID, p.ProductID)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (s *Service) AddProduct(ctx context.Context, product *Product) error {
 	cart, err := s.LoadCart(ctx, product.ClientID)
 	if err != nil {

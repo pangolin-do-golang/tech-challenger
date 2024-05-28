@@ -2,6 +2,7 @@ package order
 
 import (
 	"context"
+	"fmt"
 	"github.com/google/uuid"
 	"github.com/pangolin-do-golang/tech-challenge/internal/application/cart"
 	"github.com/pangolin-do-golang/tech-challenge/internal/application/product"
@@ -35,6 +36,10 @@ func (s *Service) Create(clientID uuid.UUID) (*Order, error) {
 	c, err := s.CartService.GetFullCart(clientID)
 	if err != nil {
 		return nil, err
+	}
+
+	if len(c.Products) == 0 {
+		return nil, fmt.Errorf("empty cart")
 	}
 
 	order := &Order{
@@ -76,6 +81,10 @@ func (s *Service) Create(clientID uuid.UUID) (*Order, error) {
 	o.Status = Status.Preparing
 	err = s.OrderRepository.Update(o)
 	if err != nil {
+		return nil, err
+	}
+
+	if err = s.CartService.Cleanup(clientID); err != nil {
 		return nil, err
 	}
 

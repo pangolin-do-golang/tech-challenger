@@ -40,7 +40,7 @@ func (ctrl OrderController) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, orderSlice)
 }
 
-// Get Get a order by ID
+// Get a order by ID
 // @Summary Get order by ID
 // @Description Get a order by ID
 // @Tags Order
@@ -74,9 +74,14 @@ func (ctrl OrderController) Get(c *gin.Context) {
 	c.JSON(http.StatusOK, o)
 }
 
+type CreateOrderPayload struct {
+	ClientID uuid.UUID `json:"client_id" binding:"required" format:"uuid"`
+}
+
 // Create Order godoc
 // @Summary Create order from Cart
 // @Description Create order from Cart
+// @Param payload body controller.CreateOrderPayload true "CreateOrderPayload"
 // @Tags Order
 // @Accept  json
 // @Produce  json
@@ -84,11 +89,7 @@ func (ctrl OrderController) Get(c *gin.Context) {
 // @Failure 500 {object} map[string]any "{\"error\": \Internal Server Error\"}"
 // @Router /order [post]
 func (ctrl OrderController) Create(c *gin.Context) {
-	type Payload struct {
-		ClientID uuid.UUID `json:"client_id" binding:"required"`
-	}
-
-	payload := &Payload{}
+	payload := &CreateOrderPayload{}
 
 	if err := c.ShouldBindJSON(&payload); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

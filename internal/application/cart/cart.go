@@ -37,4 +37,5 @@ type IService interface {
 	AddProduct(ctx context.Context, product *Product) error
 	RemoveProduct(ctx context.Context, clientID uuid.UUID, productID uuid.UUID) error
 	EditProduct(ctx context.Context, product *Product) error
+	Cleanup(clientID uuid.UUID) error
 }

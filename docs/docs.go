@@ -337,6 +337,17 @@ const docTemplate = `{
                     "Order"
                 ],
                 "summary": "Create order from Cart",
+                "parameters": [
+                    {
+                        "description": "CreateOrderPayload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.CreateOrderPayload"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -404,17 +415,32 @@ const docTemplate = `{
             ],
             "properties": {
                 "client_id": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uuid"
                 },
                 "comments": {
                     "type": "string"
                 },
                 "product_id": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uuid"
                 },
                 "quantity": {
-                    "description": "TODO validação de quantidade \u003e= 0 / estoque",
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 1,
+                    "example": 1
+                }
+            }
+        },
+        "controller.CreateOrderPayload": {
+            "type": "object",
+            "required": [
+                "client_id"
+            ],
+            "properties": {
+                "client_id": {
+                    "type": "string",
+                    "format": "uuid"
                 }
             }
         },
@@ -453,16 +479,19 @@ const docTemplate = `{
             ],
             "properties": {
                 "client_id": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uuid"
                 },
                 "comments": {
                     "type": "string"
                 },
                 "product_id": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uuid"
                 },
                 "quantity": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 2
                 }
             }
         },
@@ -474,10 +503,12 @@ const docTemplate = `{
             ],
             "properties": {
                 "client_id": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uuid"
                 },
                 "product_id": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uuid"
                 }
             }
         },

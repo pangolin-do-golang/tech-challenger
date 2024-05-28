@@ -19,11 +19,10 @@ func NewCartController(cart cart.IService) *CartController {
 }
 
 type AddProductPayload struct {
-	ClientID  uuid.UUID `json:"client_id" binding:"required"`
-	ProductID uuid.UUID `json:"product_id" binding:"required"`
-	// TODO validação de quantidade >= 0 / estoque
-	Quantity int    `json:"quantity" binding:"required"`
-	Comments string `json:"comments"`
+	ClientID  uuid.UUID `json:"client_id" binding:"required" format:"uuid"`
+	ProductID uuid.UUID `json:"product_id" binding:"required" format:"uuid"`
+	Quantity  int       `json:"quantity" binding:"required,min=1" example:"1"`
+	Comments  string    `json:"comments"`
 }
 
 // AddProduct adds a Product to Customer's Cart
@@ -60,9 +59,9 @@ func (ctrl CartController) AddProduct(c *gin.Context) {
 }
 
 type EditProductPayload struct {
-	ClientID  uuid.UUID `json:"client_id" binding:"required"`
-	ProductID uuid.UUID `json:"product_id" binding:"required"`
-	Quantity  int       `json:"quantity" binding:"required"`
+	ClientID  uuid.UUID `json:"client_id" binding:"required" format:"uuid"`
+	ProductID uuid.UUID `json:"product_id" binding:"required" format:"uuid"`
+	Quantity  int       `json:"quantity" binding:"required" example:"2"`
 	Comments  string    `json:"comments"`
 }
 
@@ -98,8 +97,8 @@ func (ctrl CartController) EditProduct(c *gin.Context) {
 }
 
 type RemoveProductPayload struct {
-	ClientID  uuid.UUID `json:"client_id" binding:"required"`
-	ProductID uuid.UUID `json:"product_id" binding:"required"`
+	ClientID  uuid.UUID `json:"client_id" binding:"required" format:"uuid"`
+	ProductID uuid.UUID `json:"product_id" binding:"required" format:"uuid"`
 }
 
 // RemoveProduct removes a Product from Customer's Cart
