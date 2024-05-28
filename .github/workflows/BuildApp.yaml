@@ -77,6 +77,7 @@ jobs:
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
+          github-pat: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push docker image to Registry
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
