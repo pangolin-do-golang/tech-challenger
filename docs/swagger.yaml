@@ -102,6 +102,21 @@ definitions:
       totalAmount:
         type: number
     type: object
+  product.Product:
+    properties:
+      category:
+        type: string
+      createdAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -365,4 +380,55 @@ paths:
       summary: Get order by ID
       tags:
       - Order
+  /product:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Name of Product
+        in: path
+        name: search
+        type: string
+      - description: Category of Product
+        in: path
+        name: category
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: product.Product
+          schema:
+            $ref: '#/definitions/product.Product'
+        "500":
+          description: '{\"error\": \"something went bad :(\"}'
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Search products with given criteria
+      tags:
+      - Product
+  /product/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID of Product
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: '{\"error\": \"something went bad :(\"}'
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Delete a Product with given ID
+      tags:
+      - Product
 swagger: "2.0"

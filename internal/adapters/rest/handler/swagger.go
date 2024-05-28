@@ -7,7 +7,5 @@ import (
 )
 
 func RegisterSwaggerHandlers(router *gin.Engine) {
-	router.GET("/swagger/*any", func(c *gin.Context) {
-		ginSwagger.WrapHandler(swaggerFiles.Handler)
-	})
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }
