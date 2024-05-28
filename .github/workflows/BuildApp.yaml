@@ -61,23 +61,15 @@ jobs:
         uses: aquasecurity/trivy-action@0.21.0
         with:
           image-ref: '$REGISTRY/$REPOSITORY:$IMAGE_TAG'
-          format: 'sarif'
+          format: 'table'
           exit-code: '1'
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
-          output: './trivy-results.sarif'
         env:
           REGISTRY: ghcr.io
           REPOSITORY: ${{ github.repository }}          
           IMAGE_TAG: ${{ steps.short-sha.outputs.sha }}
-
-      - name: Upload Trivy Scan Results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: './trivy-results.sarif'
-
 
       - name: Push docker image to Registry
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
