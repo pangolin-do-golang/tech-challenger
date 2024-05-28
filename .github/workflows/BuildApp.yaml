@@ -60,12 +60,13 @@ jobs:
       - name: Run Trivy Vulnerability Scanner
         uses: aquasecurity/trivy-action@0.21.0
         with:
-          image-ref: '$REGISTRY/$REPOSITORY:$IMAGE_TAG'
+          image-ref: "$REGISTRY/$REPOSITORY:$IMAGE_TAG"
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
+        env:
           REGISTRY: ghcr.io
           REPOSITORY: ${{ github.repository }}          
           IMAGE_TAG: ${{ steps.short-sha.outputs.sha }}
