@@ -62,11 +62,12 @@ jobs:
         with:
           image-ref: "ghcr.io/${{ github.repository }}:${{ steps.short-sha.outputs.sha }}"
           format: 'github'
+          scan-type: 'image'
           exit-code: '1'
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
-          github-pat: ${{ secrets.GITHUB_TOKEN }}
+          github-pat: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Push docker image to Registry
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
