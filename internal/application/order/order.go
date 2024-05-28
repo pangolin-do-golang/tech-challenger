@@ -8,19 +8,19 @@ import (
 )
 
 type Order struct {
-	ID          uuid.UUID
-	CreatedAt   time.Time
-	ClientID    uuid.UUID
-	TotalAmount float64
-	Status      string
+	ID          uuid.UUID `json:"id"`
+	CreatedAt   time.Time `json:"created_at"`
+	ClientID    uuid.UUID `json:"client_id"`
+	TotalAmount float64   `json:"total_amount"`
+	Status      string    `json:"status"`
 }
 
 type Product struct {
-	ClientID  uuid.UUID
-	ProductID uuid.UUID
-	Quantity  int
-	Comments  string
-	Total     float64
+	ClientID  uuid.UUID `json:"client_id"`
+	ProductID uuid.UUID `json:"product_id"`
+	Quantity  int       `json:"quantity"`
+	Comments  string    `json:"comments"`
+	Total     float64   `json:"total"`
 }
 
 var Status = struct {

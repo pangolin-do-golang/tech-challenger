@@ -7,16 +7,16 @@ import (
 )
 
 type Cart struct {
-	ID       uuid.UUID
-	ClientID uuid.UUID
-	Products []*Product
+	ID       uuid.UUID  `json:"id"`
+	ClientID uuid.UUID  `json:"client_id"`
+	Products []*Product `json:"products"`
 }
 
 type Product struct {
-	ClientID  uuid.UUID
-	ProductID uuid.UUID
-	Quantity  int
-	Comments  string
+	ClientID  uuid.UUID `json:"client_id"`
+	ProductID uuid.UUID `json:"product_id"`
+	Quantity  int       `json:"quantity"`
+	Comments  string    `json:"comments"`
 }
 
 type ICartRepository interface {

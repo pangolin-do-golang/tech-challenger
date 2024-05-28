@@ -3,11 +3,11 @@ package customer
 import "github.com/google/uuid"
 
 type Customer struct {
-	Id    uuid.UUID
-	Name  string
-	Cpf   string
-	Email string
-	Age   int
+	Id    uuid.UUID `json:"id"`
+	Name  string    `json:"name"`
+	Cpf   string    `json:"cpf"`
+	Email string    `json:"email"`
+	Age   int       `json:"age"`
 }
 
 type IService interface {

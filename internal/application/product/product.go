@@ -7,12 +7,12 @@ import (
 )
 
 type Product struct {
-	Id          uuid.UUID
-	Name        string
-	Description string
-	Category    string
-	Price       float64
-	CreatedAt   time.Time
+	Id          uuid.UUID `json:"id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	Category    string    `json:"category"`
+	Price       float64   `json:"price"`
+	CreatedAt   time.Time `json:"created_at"`
 }
 
 type Repository interface {

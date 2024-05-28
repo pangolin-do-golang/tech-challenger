@@ -16,8 +16,11 @@ type PostgresOrderRepository struct {
 
 type OrderPostgres struct {
 	BaseModel
-	TotalAmount float64 `gorm:"total_amount"`
-	Status      string  `gorm:"status"`
+	ClientID    uuid.UUID              `gorm:"client_id,type:uuid"`
+	TotalAmount float64                `gorm:"total_amount"`
+	Status      string                 `gorm:"status"`
+	Products    []OrderProductPostgres `gorm:"foreignKey:OrderID"`
+	Customer    CustomerPostgres       `gorm:"foreignKey:ClientID"`
 }
 
 func (op OrderPostgres) TableName() string {
@@ -31,6 +34,7 @@ func NewPostgresOrderRepository(db *gorm.DB) order.IOrderRepository {
 func (r *PostgresOrderRepository) Update(order *order.Order) error {
 	dbOrder := OrderPostgres{
 		BaseModel:   BaseModel{ID: order.ID},
+		ClientID:    order.ClientID,
 		TotalAmount: order.TotalAmount,
 		Status:      order.Status,
 	}
@@ -45,7 +49,8 @@ func (r *PostgresOrderRepository) Update(order *order.Order) error {
 
 func (r *PostgresOrderRepository) Create(order *order.Order) (*order.Order, error) {
 	dbOrder := OrderPostgres{
-		BaseModel:   BaseModel{ID: order.ID},
+		BaseModel:   BaseModel{ID: uuid.New()},
+		ClientID:    order.ClientID,
 		TotalAmount: order.TotalAmount,
 		Status:      order.Status,
 	}
@@ -56,6 +61,7 @@ func (r *PostgresOrderRepository) Create(order *order.Order) (*order.Order, erro
 	}
 
 	order.ID = dbOrder.ID
+	order.CreatedAt = dbOrder.CreatedAt
 	return order, nil
 }
 
@@ -70,6 +76,7 @@ func (r *PostgresOrderRepository) Get(id uuid.UUID) (*order.Order, error) {
 
 	return &order.Order{
 		ID:          record.ID,
+		ClientID:    record.ClientID,
 		CreatedAt:   record.CreatedAt,
 		TotalAmount: record.TotalAmount,
 		Status:      record.Status,
@@ -93,6 +100,7 @@ func (r *PostgresOrderRepository) GetAll() ([]order.Order, error) {
 	for i, record := range records {
 		parsedOrders[i] = order.Order{
 			ID:          record.ID,
+			ClientID:    record.ClientID,
 			CreatedAt:   record.CreatedAt,
 			TotalAmount: record.TotalAmount,
 			Status:      record.Status,

@@ -13,6 +13,22 @@ type PostgresProductRepository struct {
 	db *gorm.DB
 }
 
+type ProductPostgres struct {
+	BaseModel
+	Name        string  `gorm:"name"`
+	Description string  `gorm:"description"`
+	Category    string  `gorm:"category"`
+	Price       float64 `gorm:"price"`
+}
+
+func (pp ProductPostgres) TableName() string {
+	return "product"
+}
+
+func NewPostgresProductRepository(db *gorm.DB) product.Repository {
+	return &PostgresProductRepository{db: db}
+}
+
 func (repo *PostgresProductRepository) GetByID(id uuid.UUID) (*product.Product, error) {
 	var dbRecord ProductPostgres
 
@@ -31,22 +47,6 @@ func (repo *PostgresProductRepository) GetByID(id uuid.UUID) (*product.Product, 
 		Category:    dbRecord.Category,
 		Price:       dbRecord.Price,
 	}, nil
-}
-
-type ProductPostgres struct {
-	BaseModel
-	Name        string  `gorm:"name"`
-	Description string  `gorm:"description"`
-	Category    string  `gorm:"category"`
-	Price       float64 `gorm:"price"`
-}
-
-func (pp ProductPostgres) TableName() string {
-	return "product"
-}
-
-func NewPostgresProductRepository(db *gorm.DB) product.Repository {
-	return &PostgresProductRepository{db: db}
 }
 
 func (repo *PostgresProductRepository) Search(search string, category string) (*[]product.Product, error) {

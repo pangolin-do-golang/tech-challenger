@@ -15,7 +15,9 @@ type PostgresCartRepository struct {
 
 type CartPostgres struct {
 	BaseModel
-	ClientID uuid.UUID `gorm:"type:uuid" json:"client_id"`
+	ClientID uuid.UUID              `gorm:"client_id"`
+	Customer CustomerPostgres       `gorm:"foreignKey:ClientID"`
+	Products []CartProductsPostgres `gorm:"foreignKey:CartID"`
 }
 
 func (op CartPostgres) TableName() string {
