@@ -34,6 +34,7 @@ USER nonroot
 
 # Copy only the binary from the build stage to the final image
 COPY --from=builder /app/web /
+COPY --from=builder /app/docs/* /docs/
 
 #Expose ports
 EXPOSE 8080
