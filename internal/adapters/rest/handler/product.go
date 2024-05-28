@@ -9,7 +9,6 @@ import (
 )
 
 func RegisterProductHandlers(router *gin.Engine, service *product.Service) {
-
 	router.GET("/product", func(c *gin.Context) {
 		search := c.Query("search")
 		category := c.Query("category")

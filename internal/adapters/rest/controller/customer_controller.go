@@ -25,7 +25,7 @@ func NewCustomerController(service customer.IService) *CustomerController {
 	}
 }
 
-// Create Create a new customer
+// Create a new customer
 // @Summary Create customer
 // @Description Create a new customer
 // @Tags Customer

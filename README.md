@@ -26,7 +26,7 @@ To correctly use the project, it is necessary to define a .env file, with the va
 * DB_NAME 
 * DB_PORT
 
-We recommend using for development with the following values:
+We recommend using for development the following values:
 
 ```
 DB_USERNAME=user
@@ -43,12 +43,10 @@ docker-compose build
 
 docker-compose up -d
 
-curl --request GET --url http://localhost:8080/status
+curl --request GET --url http://localhost:8080/health
 
 ## Expected response
-{
-"status": "ok"
-}
+= Status Code 200
 ```
 
 ## Stack

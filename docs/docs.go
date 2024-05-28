@@ -15,6 +15,113 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/cart/add-product": {
+            "post": {
+                "description": "Adds a Product to Customer's Cart",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cart"
+                ],
+                "parameters": [
+                    {
+                        "description": "AddProductPayload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.AddProductPayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "{\\\"error\\\": \\\"Internal Server Error\\\"}",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/cart/edit-product": {
+            "post": {
+                "description": "Edits a Product from Customer's Cart",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cart"
+                ],
+                "parameters": [
+                    {
+                        "description": "EditProductPayload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.EditProductPayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "{\\\"error\\\": \\\"Internal Server Error\\\"}",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/cart/remove-product": {
+            "post": {
+                "description": "Removes a Product from Customer's Cart",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cart"
+                ],
+                "parameters": [
+                    {
+                        "description": "RemoveProductPayload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.RemoveProductPayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/customer": {
             "get": {
                 "description": "Get all customer's list",
@@ -288,6 +395,29 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "controller.AddProductPayload": {
+            "type": "object",
+            "required": [
+                "client_id",
+                "product_id",
+                "quantity"
+            ],
+            "properties": {
+                "client_id": {
+                    "type": "string"
+                },
+                "comments": {
+                    "type": "string"
+                },
+                "product_id": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "description": "TODO validação de quantidade \u003e= 0 / estoque",
+                    "type": "integer"
+                }
+            }
+        },
         "controller.CustomerPayload": {
             "type": "object",
             "required": [
@@ -311,6 +441,43 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 20,
                     "minLength": 5
+                }
+            }
+        },
+        "controller.EditProductPayload": {
+            "type": "object",
+            "required": [
+                "client_id",
+                "product_id",
+                "quantity"
+            ],
+            "properties": {
+                "client_id": {
+                    "type": "string"
+                },
+                "comments": {
+                    "type": "string"
+                },
+                "product_id": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "integer"
+                }
+            }
+        },
+        "controller.RemoveProductPayload": {
+            "type": "object",
+            "required": [
+                "client_id",
+                "product_id"
+            ],
+            "properties": {
+                "client_id": {
+                    "type": "string"
+                },
+                "product_id": {
+                    "type": "string"
                 }
             }
         },

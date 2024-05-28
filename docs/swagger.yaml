@@ -1,5 +1,21 @@
 basePath: /
 definitions:
+  controller.AddProductPayload:
+    properties:
+      client_id:
+        type: string
+      comments:
+        type: string
+      product_id:
+        type: string
+      quantity:
+        description: TODO validação de quantidade >= 0 / estoque
+        type: integer
+    required:
+    - client_id
+    - product_id
+    - quantity
+    type: object
   controller.CustomerPayload:
     properties:
       age:
@@ -18,6 +34,31 @@ definitions:
     - cpf
     - email
     - name
+    type: object
+  controller.EditProductPayload:
+    properties:
+      client_id:
+        type: string
+      comments:
+        type: string
+      product_id:
+        type: string
+      quantity:
+        type: integer
+    required:
+    - client_id
+    - product_id
+    - quantity
+    type: object
+  controller.RemoveProductPayload:
+    properties:
+      client_id:
+        type: string
+      product_id:
+        type: string
+    required:
+    - client_id
+    - product_id
     type: object
   customer.Customer:
     properties:
@@ -52,6 +93,75 @@ info:
   title: Tech Challenge Food API
   version: 0.1.0
 paths:
+  /cart/add-product:
+    post:
+      consumes:
+      - application/json
+      description: Adds a Product to Customer's Cart
+      parameters:
+      - description: AddProductPayload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/controller.AddProductPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: '{\"error\": \"Internal Server Error\"}'
+          schema:
+            additionalProperties: true
+            type: object
+      tags:
+      - Cart
+  /cart/edit-product:
+    post:
+      consumes:
+      - application/json
+      description: Edits a Product from Customer's Cart
+      parameters:
+      - description: EditProductPayload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/controller.EditProductPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: '{\"error\": \"Internal Server Error\"}'
+          schema:
+            additionalProperties: true
+            type: object
+      tags:
+      - Cart
+  /cart/remove-product:
+    post:
+      consumes:
+      - application/json
+      description: Removes a Product from Customer's Cart
+      parameters:
+      - description: RemoveProductPayload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/controller.RemoveProductPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      tags:
+      - Cart
   /customer:
     get:
       consumes:
