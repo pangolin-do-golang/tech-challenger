@@ -3,12 +3,16 @@ version: '3.9'
 services:
   pgsql:
     image: postgres:16.2
+    restart: always
     ports:
       - "5432:5432"
     environment:
       - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - ./data:/var/lib/postgresql/data:rw
+      - ./database/seed/00.sql:/docker-entrypoint-initdb.d/00.sql:rw
     networks:
       - go-food-tech-challenge-network
 
@@ -17,10 +21,13 @@ services:
       context: .
     container_name: go_tech_challenge_app
     restart: always
+    links:
+    - pgsql:pgsql
     ports:
       - "8080:8080"
     depends_on:
-      - pgsql
+      pgsql:
+        condition: service_started
     environment:
       - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}

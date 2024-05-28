@@ -1,3 +1,11 @@
+CREATE TABLE product (
+  name VARCHAR(255), 
+  description  VARCHAR(255),
+  category  VARCHAR(255), 
+  price MONEY,
+  deleted_at TIME
+);
+
 INSERT INTO product (name, description, category, price)
 VALUES ('California Roll',
         'Avocado, cucumber, and crab meat rolled in seaweed and rice, served with soy sauce and wasabi.', 'Sushi Roll',
