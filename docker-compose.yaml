@@ -11,7 +11,7 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
     volumes:
-      - ./data:/var/lib/postgresql/data:ro
+      - ./data:/var/lib/postgresql/data:rw
       - ./database/seed/00.sql:/docker-entrypoint-initdb.d/00.sql:rw
     networks:
       - go-food-tech-challenge-network
