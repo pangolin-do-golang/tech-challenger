@@ -49,6 +49,10 @@ curl --request GET --url http://localhost:8080/health
 = Status Code 200
 ```
 
+## Accessing Swagger UI
+
+Go to http://localhost:8080/swagger/index.html#/ after the application is running.
+
 ## Stack
 
 - [Go](https://go.dev/)
