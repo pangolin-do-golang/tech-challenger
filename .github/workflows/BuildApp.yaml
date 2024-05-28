@@ -35,7 +35,7 @@ jobs:
             -Dsonar.qualitygate.wait=true
             -Dsonar.verbose=true
 
-      - name: Run Snyk to check for vulnerabilities
+      - name: Run Snyk to check for Vulnerabilities
         uses: snyk/actions/golang@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
@@ -43,15 +43,13 @@ jobs:
           args: --severity-threshold=high
 
       - name: Login to GitHub Container Registry
-        id: login-ecr
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-
-      - name: Build, tag, docker image
+      - name: Build, Tag, Docker Image
         env:
           REGISTRY: ghcr.io
           REPOSITORY: ${{ github.repository }}
@@ -59,22 +57,32 @@ jobs:
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
 
-      - name: Scan Docker image
-        uses: snyk/actions/docker@master
-        continue-on-error: true
+      - name: Run Trivy Vulnerability Scanner
+        uses: aquasecurity/trivy-action@0.21.0
         with:
-          image: "${REGISTRY}/${REPOSITORY}:${IMAGE_TAG}"
-          args: --file=Dockerfile --severity-threshold=high #--sarif-file-output=snyk.sarif
+          image-ref: '$REGISTRY/$REPOSITORY:$IMAGE_TAG'
+          format: 'table,sarif'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+          output: 'trivy-results.sarif'
         env:
           REGISTRY: ghcr.io
-          REPOSITORY: ${{ github.repository }}
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          REPOSITORY: ${{ github.repository }}          
           IMAGE_TAG: ${{ steps.short-sha.outputs.sha }}
 
-      - name: Push docker image to Amazon ECR
+      - name: Upload Trivy Scan Results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+      - name: Push docker image to Registry
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
         env:
           REGISTRY: ghcr.io
           REPOSITORY: ${{ github.repository }}
           IMAGE_TAG: ${{ steps.short-sha.outputs.sha }}
-        run: |
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
