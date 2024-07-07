@@ -103,6 +103,22 @@ The documentation can be founded at the path `/docs/swagger.yaml` or accessing t
 
 ## Infrastructure
 
+[Requirements Infrastructure](https://github.com/pangolin-do-golang/tech-challenge/blob/main/terraform/README.md)
 
-[Requierments Infrastructure](https://github.com/pangolin-do-golang/tech-challenge/blob/main/terraform/README.md)
+## Kubernetes
 
+The Kubernetes templates are located at the `/deploy/k8s` folder, you can use it to create a local k8s setup with minikube
+
+The order of execution is:
+1. namespaces
+2. secret > you should update the secret value with the database password
+3. deployment
+4. hpa
+5. secret
+
+
+You can forward the port with the following command:
+
+```bash
+kubectl port-forward svc/tech-challenge-service 4000:80 -n dev
+```

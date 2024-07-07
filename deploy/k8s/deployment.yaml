@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tech-challenge-deployment
+  labels:
+    app: tech-challenge
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tech-challenge
+  template:
+    metadata:
+      labels:
+        app: tech-challenge
+    spec:
+      containers:
+        - name: tech-challenge-container
+          image: ghcr.io/pangolin-do-golang/tech-challenge:7c14309
+          ports:
+            - containerPort: 8080
+
+          env:
+            - name: DB_USERNAME
+              value: postgres.jhwmlvbsmtyluoccjabw
+
+            - name: DB_HOST
+              value: aws-0-sa-east-1.pooler.supabase.com
+
+            - name: DB_NAME
+              value: postgres
+
+            - name: DB_PORT
+              value: "6543"
+
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-password-secret
+                  key: db-password
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+            successThreshold: 1
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+            successThreshold: 1
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
