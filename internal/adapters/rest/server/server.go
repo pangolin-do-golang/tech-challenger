@@ -9,19 +9,18 @@ import (
 	"github.com/pangolin-do-golang/tech-challenge/internal/application/cart"
 	"github.com/pangolin-do-golang/tech-challenge/internal/application/customer"
 	"github.com/pangolin-do-golang/tech-challenge/internal/application/order"
-	"github.com/pangolin-do-golang/tech-challenge/internal/application/product"
 )
 
 type RestServer struct {
 	orderService    order.IOrderService
-	productService  *product.Service
+	productService  *cart.Service
 	cartService     cart.IService
 	customerService customer.IService
 }
 
 type RestServerOptions struct {
 	OrderService    order.IOrderService
-	ProductService  *product.Service
+	ProductService  *cart.Service
 	CartService     cart.IService
 	CustomerService customer.IService
 }

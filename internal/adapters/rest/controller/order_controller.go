@@ -40,9 +40,9 @@ func (ctrl OrderController) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, orderSlice)
 }
 
-// Get a order by ID
+// Get an order by ID
 // @Summary Get order by ID
-// @Description Get a order by ID
+// @Description Get an order by ID
 // @Tags Order
 // @Param id path string true "ID of the order"
 // @Accept json

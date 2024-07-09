@@ -8,7 +8,7 @@ Miro Board: https://miro.com/app/board/uXjVKVoZwos=/?share_link_id=718027124865
 
 ### Go 
 
-- [Go Instalation](https://go.dev/doc/install)
+- [Go Install](https://go.dev/doc/install)
 
 > Make sure you have Go 1.22.2 or higher
 
@@ -59,7 +59,7 @@ Go to http://localhost:8080/swagger/index.html#/ after the application is runnin
 
 - [Go](https://go.dev/)
 - [Gin Web Framework](https://gin-gonic.com/) - Routes, JSON validation, Error management, Middleware support
-- [PostgreSQL](https://www.postgresql.org/) - Database
+- [PostgresSQL](https://www.postgresql.org/) - Database
 - [swag](https://github.com/swaggo/swag) - Tool to generate swagger documentation
 - [docker](https://www.docker.com/) - Containerization tool
 - [docker-compose](https://docs.docker.com/compose/) - Tool to define and run multi-container Docker applications
@@ -94,7 +94,7 @@ Follow the steps described in the [official documentation](https://github.com/sw
 ### Generate 
 
 ```shell
- swag init -g cmd/rest/main.go 
+ swag init -g cmd/http/main.go 
 ```
 
 ### Access the documentation

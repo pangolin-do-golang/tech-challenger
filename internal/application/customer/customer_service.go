@@ -2,7 +2,6 @@ package customer
 
 import (
 	"errors"
-
 	"github.com/google/uuid"
 )
 
