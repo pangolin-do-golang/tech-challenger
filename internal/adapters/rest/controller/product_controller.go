@@ -3,15 +3,15 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/pangolin-do-golang/tech-challenge/internal/application/cart"
+	"github.com/pangolin-do-golang/tech-challenge/internal/core/product"
 	"net/http"
 )
 
 type ProductController struct {
-	service *cart.Service
+	service *product.Service
 }
 
-func NewProductController(service *cart.Service) *ProductController {
+func NewProductController(service *product.Service) *ProductController {
 	return &ProductController{
 		service: service,
 	}

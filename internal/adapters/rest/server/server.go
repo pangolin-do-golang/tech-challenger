@@ -6,21 +6,22 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pangolin-do-golang/tech-challenge/internal/adapters/rest/handler"
 	"github.com/pangolin-do-golang/tech-challenge/internal/adapters/rest/middleware"
-	"github.com/pangolin-do-golang/tech-challenge/internal/application/cart"
-	"github.com/pangolin-do-golang/tech-challenge/internal/application/customer"
-	"github.com/pangolin-do-golang/tech-challenge/internal/application/order"
+	"github.com/pangolin-do-golang/tech-challenge/internal/core/cart"
+	"github.com/pangolin-do-golang/tech-challenge/internal/core/customer"
+	"github.com/pangolin-do-golang/tech-challenge/internal/core/order"
+	"github.com/pangolin-do-golang/tech-challenge/internal/core/product"
 )
 
 type RestServer struct {
 	orderService    order.IOrderService
-	productService  *cart.Service
+	productService  *product.Service
 	cartService     cart.IService
 	customerService customer.IService
 }
 
 type RestServerOptions struct {
 	OrderService    order.IOrderService
-	ProductService  *cart.Service
+	ProductService  *product.Service
 	CartService     cart.IService
 	CustomerService customer.IService
 }

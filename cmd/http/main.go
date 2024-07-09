@@ -2,9 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/pangolin-do-golang/tech-challenge/internal/application/cart"
-	"github.com/pangolin-do-golang/tech-challenge/internal/application/order"
-	"github.com/pangolin-do-golang/tech-challenge/internal/application/product"
 	"log"
 	"os"
 
@@ -12,6 +9,10 @@ import (
 	_ "github.com/pangolin-do-golang/tech-challenge/docs"
 	dbAdapter "github.com/pangolin-do-golang/tech-challenge/internal/adapters/db"
 	"github.com/pangolin-do-golang/tech-challenge/internal/adapters/rest/server"
+	"github.com/pangolin-do-golang/tech-challenge/internal/core/cart"
+	"github.com/pangolin-do-golang/tech-challenge/internal/core/customer"
+	"github.com/pangolin-do-golang/tech-challenge/internal/core/order"
+	"github.com/pangolin-do-golang/tech-challenge/internal/core/product"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -29,7 +30,7 @@ func main() {
 	}
 
 	customerRepository := dbAdapter.NewPostgresCustomerRepository(db)
-	customerService := cart.NewService(customerRepository)
+	customerService := customer.NewService(customerRepository)
 
 	productRepository := dbAdapter.NewPostgresProductRepository(db)
 	productService := product.NewProductService(productRepository)

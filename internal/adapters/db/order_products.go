@@ -2,7 +2,7 @@ package db
 
 import (
 	"context"
-	"github.com/pangolin-do-golang/tech-challenge/internal/application/order"
+	"github.com/pangolin-do-golang/tech-challenge/internal/core/order"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"

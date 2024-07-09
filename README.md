@@ -79,9 +79,9 @@ The diagram contains:
 
 ## Architecture
 
-This project follows the models proposed by Hexagonal Architecture
+This project follows the models proposed by Clean Architecture
 
-![Source: https://making.ndd.tech/reflex%C3%B5es-sobre-o-uso-de-orms-em-dom%C3%ADnios-complexos-parte-2-d7f0ac937121](https://miro.medium.com/v2/resize:fit:521/1*vrXUudR0NzRESXmZl_cHoA.png)
+![Source: https://blog.geisonbiazus.com/static/image/architecture.png](https://blog.geisonbiazus.com/static/image/architecture.png)
 
 ## Swagger
 
@@ -114,11 +114,28 @@ The order of execution is:
 2. secret > you should update the secret value with the database password
 3. deployment
 4. hpa
-5. secret
-
+5. service
 
 You can forward the port with the following command:
 
 ```bash
 kubectl port-forward svc/tech-challenge-service 4000:80 -n dev
 ```
+
+### Kubernates Architecture
+
+![Diagram](deploy/diagram/kubernates-diagram.png)
+
+## Project structure
+
+- `cmd`: Application entry point directory for the application's main entry points, dependency injection, or commands. The web subdirectory contains the main entry point to the REST API.
+- `internal`: Directory to contain application code that should not be exposed to external packages.
+    - `core`: Directory that contains the application's core business logic.
+        - `cart`: Directory contains definition of the entity's heights, interfaces, repository and service of the entity Cart.
+        - `customer`: Directory contains definition of the entity's heights, interfaces, repository and service of the entity Customer.
+        - `order`: Directory contains definition of the entity's heights, interfaces, repository and service of the entity Order.
+        - `product`: Directory contains definition of the entity's heights, interfaces, repository and service of the entity Product.
+    - `adapters`: Directory to contain external services that will interact with the application core.
+        - `db`: Directory contains the implementation of the repositories.
+        - `rest`: Directory that contains the definition of the application's controllers and handlers for manipulating data provided by the controller
+  - `domainerrors`: Directory that contains the definition of the application's domain errors.

@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"github.com/pangolin-do-golang/tech-challenge/internal/application/cart"
+	"github.com/pangolin-do-golang/tech-challenge/internal/core/cart"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
