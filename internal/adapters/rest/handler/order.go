@@ -3,11 +3,12 @@ package handler
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pangolin-do-golang/tech-challenge/internal/adapters/rest/controller"
-	"github.com/pangolin-do-golang/tech-challenge/internal/application/order"
+	"github.com/pangolin-do-golang/tech-challenge/internal/core/cart"
+	"github.com/pangolin-do-golang/tech-challenge/internal/core/order"
 )
 
 type OrderHandler struct {
-	service *order.Service
+	service *cart.Service
 }
 
 func RegisterOrderHandlers(router *gin.Engine, service order.IOrderService) {

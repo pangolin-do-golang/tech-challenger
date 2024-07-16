@@ -19,10 +19,10 @@ const docTemplate = `{
             "post": {
                 "description": "Adds a Product to Customer's Cart",
                 "consumes": [
-                    "application/json"
+                    "core/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "core/json"
                 ],
                 "tags": [
                     "Cart"
@@ -56,10 +56,10 @@ const docTemplate = `{
             "post": {
                 "description": "Edits a Product from Customer's Cart",
                 "consumes": [
-                    "application/json"
+                    "core/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "core/json"
                 ],
                 "tags": [
                     "Cart"
@@ -93,10 +93,10 @@ const docTemplate = `{
             "post": {
                 "description": "Removes a Product from Customer's Cart",
                 "consumes": [
-                    "application/json"
+                    "core/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "core/json"
                 ],
                 "tags": [
                     "Cart"
@@ -126,10 +126,10 @@ const docTemplate = `{
             "get": {
                 "description": "Get all customer's list",
                 "consumes": [
-                    "application/json"
+                    "core/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "core/json"
                 ],
                 "tags": [
                     "Customer"
@@ -150,10 +150,10 @@ const docTemplate = `{
             "post": {
                 "description": "Create a new customer",
                 "consumes": [
-                    "application/json"
+                    "core/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "core/json"
                 ],
                 "tags": [
                     "Customer"
@@ -191,10 +191,10 @@ const docTemplate = `{
             "get": {
                 "description": "Get a customer by cpf",
                 "consumes": [
-                    "application/json"
+                    "core/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "core/json"
                 ],
                 "tags": [
                     "Customer"
@@ -226,10 +226,10 @@ const docTemplate = `{
             "put": {
                 "description": "Update a customer by id",
                 "consumes": [
-                    "application/json"
+                    "core/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "core/json"
                 ],
                 "tags": [
                     "Customer"
@@ -272,10 +272,10 @@ const docTemplate = `{
             "delete": {
                 "description": "Delete a customer by id",
                 "consumes": [
-                    "application/json"
+                    "core/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "core/json"
                 ],
                 "tags": [
                     "Customer"
@@ -304,10 +304,10 @@ const docTemplate = `{
             "get": {
                 "description": "Get all order's list",
                 "consumes": [
-                    "application/json"
+                    "core/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "core/json"
                 ],
                 "tags": [
                     "Order"
@@ -328,10 +328,10 @@ const docTemplate = `{
             "post": {
                 "description": "Create order from Cart",
                 "consumes": [
-                    "application/json"
+                    "core/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "core/json"
                 ],
                 "tags": [
                     "Order"
@@ -369,10 +369,10 @@ const docTemplate = `{
             "get": {
                 "description": "Get a order by ID",
                 "consumes": [
-                    "application/json"
+                    "core/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "core/json"
                 ],
                 "tags": [
                     "Order"
@@ -407,10 +407,10 @@ const docTemplate = `{
         "/product": {
             "get": {
                 "consumes": [
-                    "application/json"
+                    "core/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "core/json"
                 ],
                 "tags": [
                     "Product"
@@ -450,10 +450,10 @@ const docTemplate = `{
         "/product/{id}": {
             "delete": {
                 "consumes": [
-                    "application/json"
+                    "core/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "core/json"
                 ],
                 "tags": [
                     "Product"

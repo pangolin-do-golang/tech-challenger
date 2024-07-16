@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"github.com/pangolin-do-golang/tech-challenge/internal/application/cart"
+	"github.com/pangolin-do-golang/tech-challenge/internal/core/cart"
 	"gorm.io/gorm"
 )
 
@@ -28,7 +28,7 @@ func NewPostgresCartProductsRepository(db *gorm.DB) cart.ICartProductRepository 
 	return &PostgresCartProductsRepository{db: db}
 }
 
-func (p *PostgresCartProductsRepository) Create(ctx context.Context, cartID uuid.UUID, product *cart.Product) error {
+func (p *PostgresCartProductsRepository) Create(_ context.Context, cartID uuid.UUID, product *cart.Product) error {
 	cartProduct := CartProductsPostgres{
 		CartID:    cartID,
 		ProductID: product.ProductID,
@@ -44,7 +44,7 @@ func (p *PostgresCartProductsRepository) Create(ctx context.Context, cartID uuid
 	return nil
 }
 
-func (p *PostgresCartProductsRepository) GetByCartID(ctx context.Context, cartID uuid.UUID) ([]*cart.Product, error) {
+func (p *PostgresCartProductsRepository) GetByCartID(_ context.Context, cartID uuid.UUID) ([]*cart.Product, error) {
 	var cartProducts []CartProductsPostgres
 	err := p.db.Where("cart_id = ?", cartID).Find(&cartProducts).Error
 	if err != nil {
@@ -63,11 +63,11 @@ func (p *PostgresCartProductsRepository) GetByCartID(ctx context.Context, cartID
 	return products, nil
 }
 
-func (p *PostgresCartProductsRepository) DeleteByProductID(ctx context.Context, cartID, productID uuid.UUID) error {
+func (p *PostgresCartProductsRepository) DeleteByProductID(_ context.Context, cartID, productID uuid.UUID) error {
 	return p.db.Delete(&CartProductsPostgres{}, "cart_id = ? AND product_id = ?", cartID, productID).Error
 }
 
-func (p *PostgresCartProductsRepository) UpdateProductByProductID(ctx context.Context, cartID, productID uuid.UUID, product *cart.Product) error {
+func (p *PostgresCartProductsRepository) UpdateProductByProductID(_ context.Context, cartID, productID uuid.UUID, product *cart.Product) error {
 	return p.db.Model(&CartProductsPostgres{}).
 		Where("cart_id = ? AND product_id = ?", cartID, productID).
 		Updates(map[string]interface{}{

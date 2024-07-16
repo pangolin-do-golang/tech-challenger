@@ -3,7 +3,7 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/pangolin-do-golang/tech-challenge/internal/application/product"
+	"github.com/pangolin-do-golang/tech-challenge/internal/core/product"
 	"net/http"
 )
 

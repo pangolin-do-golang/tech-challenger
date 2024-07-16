@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/google/uuid"
-	"github.com/pangolin-do-golang/tech-challenge/internal/application/customer"
+	"github.com/pangolin-do-golang/tech-challenge/internal/core/customer"
 	"github.com/pangolin-do-golang/tech-challenge/internal/domainerrors"
 	"gorm.io/gorm"
 )

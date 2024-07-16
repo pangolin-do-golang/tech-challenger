@@ -3,7 +3,7 @@ package handler
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pangolin-do-golang/tech-challenge/internal/adapters/rest/controller"
-	"github.com/pangolin-do-golang/tech-challenge/internal/application/product"
+	"github.com/pangolin-do-golang/tech-challenge/internal/core/product"
 )
 
 func RegisterProductHandlers(router *gin.Engine, service *product.Service) {

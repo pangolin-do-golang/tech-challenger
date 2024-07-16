@@ -2,7 +2,7 @@ package db
 
 import (
 	"context"
-	"github.com/pangolin-do-golang/tech-challenge/internal/application/order"
+	"github.com/pangolin-do-golang/tech-challenge/internal/core/order"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -29,7 +29,7 @@ func NewPostgresOrderProductsRepository(db *gorm.DB) order.IOrderProductReposito
 	return &PostgresOrderProductsRepository{db: db}
 }
 
-func (p *PostgresOrderProductsRepository) Create(ctx context.Context, orderID uuid.UUID, product *order.Product) error {
+func (p *PostgresOrderProductsRepository) Create(_ context.Context, orderID uuid.UUID, product *order.Product) error {
 	orderProduct := OrderProductPostgres{
 		OrderID:   orderID,
 		ProductID: product.ProductID,
@@ -45,7 +45,7 @@ func (p *PostgresOrderProductsRepository) Create(ctx context.Context, orderID uu
 	return nil
 }
 
-func (p *PostgresOrderProductsRepository) GetByOrderID(ctx context.Context, cartID uuid.UUID) ([]*order.Product, error) {
+func (p *PostgresOrderProductsRepository) GetByOrderID(_ context.Context, cartID uuid.UUID) ([]*order.Product, error) {
 	var cartProducts []OrderProductPostgres
 	err := p.db.Where("order_id = ?", cartID).Find(&cartProducts).Error
 	if err != nil {

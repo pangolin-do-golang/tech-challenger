@@ -415,13 +415,15 @@
                         "type": "string",
                         "description": "Name of Product",
                         "name": "search",
-                        "in": "path"
+                        "in": "path",
+                        "required": true
                     },
                     {
                         "type": "string",
                         "description": "Category of Product",
                         "name": "category",
-                        "in": "path"
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {

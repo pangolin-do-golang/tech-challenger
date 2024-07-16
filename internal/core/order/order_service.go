@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/google/uuid"
-	"github.com/pangolin-do-golang/tech-challenge/internal/application/cart"
-	"github.com/pangolin-do-golang/tech-challenge/internal/application/product"
+	"github.com/pangolin-do-golang/tech-challenge/internal/core/cart"
+	"github.com/pangolin-do-golang/tech-challenge/internal/core/product"
 )
 
 type Service struct {

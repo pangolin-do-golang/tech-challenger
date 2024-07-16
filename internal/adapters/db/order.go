@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/pangolin-do-golang/tech-challenge/internal/application/order"
+	"github.com/pangolin-do-golang/tech-challenge/internal/core/order"
 	"github.com/pangolin-do-golang/tech-challenge/internal/domainerrors"
 	"gorm.io/gorm"
 )
