@@ -14,7 +14,9 @@ type OrderHandler struct {
 func RegisterOrderHandlers(router *gin.Engine, service order.IOrderService) {
 	orderController := controller.NewOrderController(service)
 
+	// todo change to orders
 	router.POST("/order", orderController.Create)
 	router.GET("/order", orderController.GetAll)
 	router.GET("/order/:id", orderController.Get)
+	router.POST("/orders/webhook", orderController.Webhook)
 }

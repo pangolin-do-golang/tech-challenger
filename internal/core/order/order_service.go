@@ -32,6 +32,25 @@ func (s *Service) GetAll() ([]Order, error) {
 	return s.OrderRepository.GetAll()
 }
 
+func (s *Service) Update(id uuid.UUID, status string) (*Order, error) {
+	o, err := s.OrderRepository.Get(id)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := o.ValidateStatusTransition(status); err != nil {
+		return nil, err
+	}
+
+	o.Status = status
+	err = s.OrderRepository.Update(o)
+	if err != nil {
+		return nil, err
+	}
+
+	return o, nil
+}
+
 func (s *Service) Create(clientID uuid.UUID) (*Order, error) {
 	c, err := s.CartService.GetFullCart(clientID)
 	if err != nil {
@@ -44,7 +63,7 @@ func (s *Service) Create(clientID uuid.UUID) (*Order, error) {
 
 	order := &Order{
 		ClientID: clientID,
-		Status:   Status.Created,
+		Status:   StatusCreated,
 	}
 
 	o, err := s.OrderRepository.Create(order)
@@ -78,7 +97,7 @@ func (s *Service) Create(clientID uuid.UUID) (*Order, error) {
 	}
 
 	o.TotalAmount = total
-	o.Status = Status.Preparing
+	o.Status = StatusPreparing
 	err = s.OrderRepository.Update(o)
 	if err != nil {
 		return nil, err

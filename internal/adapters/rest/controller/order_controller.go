@@ -26,7 +26,7 @@ func NewOrderController(service order.IOrderService) *OrderController {
 // @Produce json
 // @Success 200 {object} []order.Order{}
 // @Router /order [get]
-func (ctrl OrderController) GetAll(c *gin.Context) {
+func (ctrl *OrderController) GetAll(c *gin.Context) {
 	orderSlice, err := ctrl.service.GetAll()
 
 	if err != nil {
@@ -50,7 +50,7 @@ func (ctrl OrderController) GetAll(c *gin.Context) {
 // @Success 200 {object} order.Order{}
 // @Failure 400 {object} map[string]any "{\"error\": \Invalid identifier informed\"}"
 // @Router /order/{id} [get]
-func (ctrl OrderController) Get(c *gin.Context) {
+func (ctrl *OrderController) Get(c *gin.Context) {
 	id, err := uuid.Parse(c.Param("id"))
 
 	if err != nil {
@@ -88,7 +88,7 @@ type CreateOrderPayload struct {
 // @Success 200 {object} order.Order{}
 // @Failure 500 {object} map[string]any "{\"error\": \Internal Server Error\"}"
 // @Router /order [post]
-func (ctrl OrderController) Create(c *gin.Context) {
+func (ctrl *OrderController) Create(c *gin.Context) {
 	payload := &CreateOrderPayload{}
 
 	if err := c.ShouldBindJSON(&payload); err != nil {
@@ -100,6 +100,43 @@ func (ctrl OrderController) Create(c *gin.Context) {
 	}
 
 	o, err := ctrl.service.Create(payload.ClientID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+
+		return
+	}
+
+	c.JSON(http.StatusOK, o)
+}
+
+type WebhookPayload struct {
+	OrderID uuid.UUID `json:"order_id" binding:"required" format:"uuid"`
+	Status  string    `json:"status" binding:"required"`
+}
+
+// Webhook Order godoc
+// @Summary Change Orders payment status
+// @Param payload body controller.CreateOrderPayload true "CreateOrderPayload"
+// @Tags Order
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} order.Order{}
+// @Failure 500 {object} map[string]any "{\"error\": \Internal Server Error\"}"
+// @Router /order [post]
+func (ctrl *OrderController) Webhook(c *gin.Context) {
+	payload := &WebhookPayload{}
+
+	if err := c.ShouldBindJSON(&payload); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+
+		return
+	}
+
+	o, err := ctrl.service.Update(payload.OrderID, payload.Status)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
