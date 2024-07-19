@@ -1,9 +1,6 @@
 package db
 
 import (
-	"errors"
-	"fmt"
-
 	"github.com/google/uuid"
 	"github.com/pangolin-do-golang/tech-challenge/internal/core/order"
 	"github.com/pangolin-do-golang/tech-challenge/internal/domainerrors"
@@ -33,10 +30,8 @@ func NewPostgresOrderRepository(db *gorm.DB) order.IOrderRepository {
 
 func (r *PostgresOrderRepository) Update(order *order.Order) error {
 	dbOrder := OrderPostgres{
-		BaseModel:   BaseModel{ID: order.ID},
-		ClientID:    order.ClientID,
-		TotalAmount: order.TotalAmount,
-		Status:      order.Status,
+		BaseModel: BaseModel{ID: order.ID},
+		Status:    order.Status,
 	}
 
 	result := r.db.Save(&dbOrder)
@@ -69,9 +64,7 @@ func (r *PostgresOrderRepository) Get(id uuid.UUID) (*order.Order, error) {
 	var record OrderPostgres
 
 	if err := r.db.First(&record, "id = ?", id).Error; err != nil {
-
-		fmt.Println("Order not found:", err)
-		return nil, err
+		return nil, domainerrors.ErrRecordNotFound
 	}
 
 	return &order.Order{
@@ -87,11 +80,6 @@ func (r *PostgresOrderRepository) GetAll() ([]order.Order, error) {
 	var records []OrderPostgres
 
 	err := r.db.Find(&records).Error
-
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, domainerrors.ErrRecordNotFound
-	}
-
 	if err != nil {
 		return nil, err
 	}

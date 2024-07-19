@@ -294,7 +294,7 @@
                 }
             }
         },
-        "/order": {
+        "/orders": {
             "get": {
                 "description": "Get all order's list",
                 "consumes": [
@@ -359,9 +359,49 @@
                 }
             }
         },
-        "/order/{id}": {
+        "/orders/:id": {
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Update Order record",
+                "parameters": [
+                    {
+                        "description": "UpdatePayload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.UpdatePayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/order.Order"
+                        }
+                    },
+                    "500": {
+                        "description": "{\\\"error\\\": \\Internal Server Error\\\"}",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/orders/{id}": {
             "get": {
-                "description": "Get a order by ID",
+                "description": "Get an order by ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -415,15 +455,13 @@
                         "type": "string",
                         "description": "Name of Product",
                         "name": "search",
-                        "in": "path",
-                        "required": true
+                        "in": "path"
                     },
                     {
                         "type": "string",
                         "description": "Category of Product",
                         "name": "category",
-                        "in": "path",
-                        "required": true
+                        "in": "path"
                     }
                 ],
                 "responses": {
@@ -586,6 +624,22 @@
                 }
             }
         },
+        "controller.UpdatePayload": {
+            "type": "object",
+            "required": [
+                "order_id",
+                "status"
+            ],
+            "properties": {
+                "order_id": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
         "customer.Customer": {
             "type": "object",
             "properties": {
@@ -609,10 +663,10 @@
         "order.Order": {
             "type": "object",
             "properties": {
-                "clientID": {
+                "client_id": {
                     "type": "string"
                 },
-                "createdAt": {
+                "created_at": {
                     "type": "string"
                 },
                 "id": {
@@ -621,7 +675,7 @@
                 "status": {
                     "type": "string"
                 },
-                "totalAmount": {
+                "total_amount": {
                     "type": "number"
                 }
             }
@@ -632,7 +686,7 @@
                 "category": {
                     "type": "string"
                 },
-                "createdAt": {
+                "created_at": {
                     "type": "string"
                 },
                 "description": {

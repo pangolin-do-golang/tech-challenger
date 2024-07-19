@@ -19,10 +19,10 @@ const docTemplate = `{
             "post": {
                 "description": "Adds a Product to Customer's Cart",
                 "consumes": [
-                    "core/json"
+                    "application/json"
                 ],
                 "produces": [
-                    "core/json"
+                    "application/json"
                 ],
                 "tags": [
                     "Cart"
@@ -56,10 +56,10 @@ const docTemplate = `{
             "post": {
                 "description": "Edits a Product from Customer's Cart",
                 "consumes": [
-                    "core/json"
+                    "application/json"
                 ],
                 "produces": [
-                    "core/json"
+                    "application/json"
                 ],
                 "tags": [
                     "Cart"
@@ -93,10 +93,10 @@ const docTemplate = `{
             "post": {
                 "description": "Removes a Product from Customer's Cart",
                 "consumes": [
-                    "core/json"
+                    "application/json"
                 ],
                 "produces": [
-                    "core/json"
+                    "application/json"
                 ],
                 "tags": [
                     "Cart"
@@ -126,10 +126,10 @@ const docTemplate = `{
             "get": {
                 "description": "Get all customer's list",
                 "consumes": [
-                    "core/json"
+                    "application/json"
                 ],
                 "produces": [
-                    "core/json"
+                    "application/json"
                 ],
                 "tags": [
                     "Customer"
@@ -150,10 +150,10 @@ const docTemplate = `{
             "post": {
                 "description": "Create a new customer",
                 "consumes": [
-                    "core/json"
+                    "application/json"
                 ],
                 "produces": [
-                    "core/json"
+                    "application/json"
                 ],
                 "tags": [
                     "Customer"
@@ -191,10 +191,10 @@ const docTemplate = `{
             "get": {
                 "description": "Get a customer by cpf",
                 "consumes": [
-                    "core/json"
+                    "application/json"
                 ],
                 "produces": [
-                    "core/json"
+                    "application/json"
                 ],
                 "tags": [
                     "Customer"
@@ -226,10 +226,10 @@ const docTemplate = `{
             "put": {
                 "description": "Update a customer by id",
                 "consumes": [
-                    "core/json"
+                    "application/json"
                 ],
                 "produces": [
-                    "core/json"
+                    "application/json"
                 ],
                 "tags": [
                     "Customer"
@@ -272,10 +272,10 @@ const docTemplate = `{
             "delete": {
                 "description": "Delete a customer by id",
                 "consumes": [
-                    "core/json"
+                    "application/json"
                 ],
                 "produces": [
-                    "core/json"
+                    "application/json"
                 ],
                 "tags": [
                     "Customer"
@@ -300,14 +300,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/order": {
+        "/orders": {
             "get": {
                 "description": "Get all order's list",
                 "consumes": [
-                    "core/json"
+                    "application/json"
                 ],
                 "produces": [
-                    "core/json"
+                    "application/json"
                 ],
                 "tags": [
                     "Order"
@@ -328,10 +328,10 @@ const docTemplate = `{
             "post": {
                 "description": "Create order from Cart",
                 "consumes": [
-                    "core/json"
+                    "application/json"
                 ],
                 "produces": [
-                    "core/json"
+                    "application/json"
                 ],
                 "tags": [
                     "Order"
@@ -365,14 +365,54 @@ const docTemplate = `{
                 }
             }
         },
-        "/order/{id}": {
-            "get": {
-                "description": "Get a order by ID",
+        "/orders/:id": {
+            "patch": {
                 "consumes": [
-                    "core/json"
+                    "application/json"
                 ],
                 "produces": [
-                    "core/json"
+                    "application/json"
+                ],
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Update Order record",
+                "parameters": [
+                    {
+                        "description": "UpdatePayload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.UpdatePayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/order.Order"
+                        }
+                    },
+                    "500": {
+                        "description": "{\\\"error\\\": \\Internal Server Error\\\"}",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/orders/{id}": {
+            "get": {
+                "description": "Get an order by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
                 ],
                 "tags": [
                     "Order"
@@ -407,10 +447,10 @@ const docTemplate = `{
         "/product": {
             "get": {
                 "consumes": [
-                    "core/json"
+                    "application/json"
                 ],
                 "produces": [
-                    "core/json"
+                    "application/json"
                 ],
                 "tags": [
                     "Product"
@@ -450,10 +490,10 @@ const docTemplate = `{
         "/product/{id}": {
             "delete": {
                 "consumes": [
-                    "core/json"
+                    "application/json"
                 ],
                 "produces": [
-                    "core/json"
+                    "application/json"
                 ],
                 "tags": [
                     "Product"
@@ -590,6 +630,22 @@ const docTemplate = `{
                 }
             }
         },
+        "controller.UpdatePayload": {
+            "type": "object",
+            "required": [
+                "order_id",
+                "status"
+            ],
+            "properties": {
+                "order_id": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
         "customer.Customer": {
             "type": "object",
             "properties": {
@@ -613,10 +669,10 @@ const docTemplate = `{
         "order.Order": {
             "type": "object",
             "properties": {
-                "clientID": {
+                "client_id": {
                     "type": "string"
                 },
-                "createdAt": {
+                "created_at": {
                     "type": "string"
                 },
                 "id": {
@@ -625,7 +681,7 @@ const docTemplate = `{
                 "status": {
                     "type": "string"
                 },
-                "totalAmount": {
+                "total_amount": {
                     "type": "number"
                 }
             }
@@ -636,7 +692,7 @@ const docTemplate = `{
                 "category": {
                     "type": "string"
                 },
-                "createdAt": {
+                "created_at": {
                     "type": "string"
                 },
                 "description": {

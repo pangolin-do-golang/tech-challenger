@@ -2,10 +2,12 @@ package order
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/pangolin-do-golang/tech-challenge/internal/core/cart"
 	"github.com/pangolin-do-golang/tech-challenge/internal/core/product"
+	"github.com/pangolin-do-golang/tech-challenge/internal/domainerrors"
 )
 
 type Service struct {
@@ -25,7 +27,16 @@ func NewOrderService(repo IOrderRepository, orderProductRepository IOrderProduct
 }
 
 func (s *Service) Get(id uuid.UUID) (*Order, error) {
-	return s.OrderRepository.Get(id)
+	o, err := s.OrderRepository.Get(id)
+	if err != nil {
+		if errors.Is(err, domainerrors.ErrRecordNotFound) {
+			return nil, domainerrors.NewBusinessError(err, "order not found")
+		}
+
+		return nil, err
+	}
+
+	return o, nil
 }
 
 func (s *Service) GetAll() ([]Order, error) {
@@ -35,11 +46,11 @@ func (s *Service) GetAll() ([]Order, error) {
 func (s *Service) Update(id uuid.UUID, status string) (*Order, error) {
 	o, err := s.OrderRepository.Get(id)
 	if err != nil {
-		return nil, err
+		return nil, domainerrors.NewSystemError(err, "order not found")
 	}
 
 	if err := o.ValidateStatusTransition(status); err != nil {
-		return nil, err
+		return nil, domainerrors.NewBusinessError(err, err.Error())
 	}
 
 	o.Status = status

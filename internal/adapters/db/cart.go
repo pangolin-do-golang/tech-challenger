@@ -2,10 +2,10 @@ package db
 
 import (
 	"errors"
+	"github.com/pangolin-do-golang/tech-challenge/internal/domainerrors"
 
 	"github.com/google/uuid"
 	"github.com/pangolin-do-golang/tech-challenge/internal/core/cart"
-	"github.com/pangolin-do-golang/tech-challenge/internal/domainerrors"
 	"gorm.io/gorm"
 )
 

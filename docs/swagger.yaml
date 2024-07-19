@@ -76,6 +76,17 @@ definitions:
     - client_id
     - product_id
     type: object
+  controller.UpdatePayload:
+    properties:
+      order_id:
+        format: uuid
+        type: string
+      status:
+        type: string
+    required:
+    - order_id
+    - status
+    type: object
   customer.Customer:
     properties:
       age:
@@ -91,22 +102,22 @@ definitions:
     type: object
   order.Order:
     properties:
-      clientID:
+      client_id:
         type: string
-      createdAt:
+      created_at:
         type: string
       id:
         type: string
       status:
         type: string
-      totalAmount:
+      total_amount:
         type: number
     type: object
   product.Product:
     properties:
       category:
         type: string
-      createdAt:
+      created_at:
         type: string
       description:
         type: string
@@ -127,7 +138,7 @@ paths:
   /cart/add-product:
     post:
       consumes:
-      - core/json
+      - application/json
       description: Adds a Product to Customer's Cart
       parameters:
       - description: AddProductPayload
@@ -137,7 +148,7 @@ paths:
         schema:
           $ref: '#/definitions/controller.AddProductPayload'
       produces:
-      - core/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -151,7 +162,7 @@ paths:
   /cart/edit-product:
     post:
       consumes:
-      - core/json
+      - application/json
       description: Edits a Product from Customer's Cart
       parameters:
       - description: EditProductPayload
@@ -161,7 +172,7 @@ paths:
         schema:
           $ref: '#/definitions/controller.EditProductPayload'
       produces:
-      - core/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -175,7 +186,7 @@ paths:
   /cart/remove-product:
     post:
       consumes:
-      - core/json
+      - application/json
       description: Removes a Product from Customer's Cart
       parameters:
       - description: RemoveProductPayload
@@ -185,7 +196,7 @@ paths:
         schema:
           $ref: '#/definitions/controller.RemoveProductPayload'
       produces:
-      - core/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -196,10 +207,10 @@ paths:
   /customer:
     get:
       consumes:
-      - core/json
+      - application/json
       description: Get all customer's list
       produces:
-      - core/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -212,7 +223,7 @@ paths:
       - Customer
     post:
       consumes:
-      - core/json
+      - application/json
       description: Create a new customer
       parameters:
       - description: CustomerPayload
@@ -222,7 +233,7 @@ paths:
         schema:
           $ref: '#/definitions/controller.CustomerPayload'
       produces:
-      - core/json
+      - application/json
       responses:
         "200":
           description: customer.Customer
@@ -239,7 +250,7 @@ paths:
   /customer/{cpf}:
     get:
       consumes:
-      - core/json
+      - application/json
       description: Get a customer by cpf
       parameters:
       - description: customer cpf
@@ -248,7 +259,7 @@ paths:
         required: true
         type: string
       produces:
-      - core/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -262,7 +273,7 @@ paths:
   /customer/{id}:
     delete:
       consumes:
-      - core/json
+      - application/json
       description: Delete a customer by id
       parameters:
       - description: "123456789"
@@ -271,7 +282,7 @@ paths:
         required: true
         type: string
       produces:
-      - core/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -282,7 +293,7 @@ paths:
       - Customer
     put:
       consumes:
-      - core/json
+      - application/json
       description: Update a customer by id
       parameters:
       - description: ID of the customer
@@ -297,7 +308,7 @@ paths:
         schema:
           $ref: '#/definitions/controller.CustomerPayload'
       produces:
-      - core/json
+      - application/json
       responses:
         "200":
           description: customer.Customer
@@ -311,13 +322,13 @@ paths:
       summary: Update customer
       tags:
       - Customer
-  /order:
+  /orders:
     get:
       consumes:
-      - core/json
+      - application/json
       description: Get all order's list
       produces:
-      - core/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -330,7 +341,7 @@ paths:
       - Order
     post:
       consumes:
-      - core/json
+      - application/json
       description: Create order from Cart
       parameters:
       - description: CreateOrderPayload
@@ -340,7 +351,7 @@ paths:
         schema:
           $ref: '#/definitions/controller.CreateOrderPayload'
       produces:
-      - core/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -354,11 +365,37 @@ paths:
       summary: Create order from Cart
       tags:
       - Order
-  /order/{id}:
+  /orders/:id:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: UpdatePayload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/controller.UpdatePayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/order.Order'
+        "500":
+          description: '{\"error\": \Internal Server Error\"}'
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update Order record
+      tags:
+      - Order
+  /orders/{id}:
     get:
       consumes:
-      - core/json
-      description: Get a order by ID
+      - application/json
+      description: Get an order by ID
       parameters:
       - description: ID of the order
         in: path
@@ -366,7 +403,7 @@ paths:
         required: true
         type: string
       produces:
-      - core/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -383,20 +420,18 @@ paths:
   /product:
     get:
       consumes:
-      - core/json
+      - application/json
       parameters:
       - description: Name of Product
         in: path
         name: search
-        required: true
         type: string
       - description: Category of Product
         in: path
         name: category
-        required: true
         type: string
       produces:
-      - core/json
+      - application/json
       responses:
         "200":
           description: product.Product
@@ -413,7 +448,7 @@ paths:
   /product/{id}:
     delete:
       consumes:
-      - core/json
+      - application/json
       parameters:
       - description: ID of Product
         in: path
@@ -421,7 +456,7 @@ paths:
         required: true
         type: string
       produces:
-      - core/json
+      - application/json
       responses:
         "204":
           description: No Content
