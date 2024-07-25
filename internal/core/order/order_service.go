@@ -43,17 +43,17 @@ func (s *Service) GetAll() ([]Order, error) {
 	return s.OrderRepository.GetAll()
 }
 
-func (s *Service) Update(id uuid.UUID, status string) (*Order, error) {
-	o, err := s.OrderRepository.Get(id)
+func (s *Service) Update(order *Order) (*Order, error) {
+	o, err := s.OrderRepository.Get(order.ID)
 	if err != nil {
 		return nil, domainerrors.NewSystemError(err, "order not found")
 	}
 
-	if err := o.ValidateStatusTransition(status); err != nil {
+	if err := o.ValidateStatusTransition(order.Status); err != nil {
 		return nil, domainerrors.NewBusinessError(err, err.Error())
 	}
 
-	o.Status = status
+	o.Status = order.Status
 	err = s.OrderRepository.Update(o)
 	if err != nil {
 		return nil, err

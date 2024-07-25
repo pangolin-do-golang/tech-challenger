@@ -131,7 +131,10 @@ func (ctrl *OrderController) Update(c *gin.Context) {
 		return
 	}
 
-	o, err := ctrl.service.Update(payload.OrderID, payload.Status)
+	o, err := ctrl.service.Update(&order.Order{
+		ID:     payload.OrderID,
+		Status: payload.Status,
+	})
 	if err != nil {
 		ctrl.Error(c, err)
 

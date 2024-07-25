@@ -64,7 +64,7 @@ type IOrderService interface {
 	Get(id uuid.UUID) (*Order, error)
 	Create(clientID uuid.UUID) (*Order, error)
 	GetAll() ([]Order, error)
-	Update(id uuid.UUID, status string) (*Order, error)
+	Update(order *Order) (*Order, error)
 }
 
 type IOrderProductRepository interface {
