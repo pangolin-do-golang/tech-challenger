@@ -322,6 +322,12 @@ const docTemplate = `{
                                 "$ref": "#/definitions/order.Order"
                             }
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.HTTPError"
+                        }
                     }
                 }
             },
@@ -355,11 +361,22 @@ const docTemplate = `{
                             "$ref": "#/definitions/order.Order"
                         }
                     },
-                    "500": {
-                        "description": "{\\\"error\\\": \\Internal Server Error\\\"}",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/controller.HTTPError"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/controller.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.HTTPError"
                         }
                     }
                 }
@@ -367,6 +384,7 @@ const docTemplate = `{
         },
         "/orders/:id": {
             "patch": {
+                "description": "Update by json an Order",
                 "consumes": [
                     "application/json"
                 ],
@@ -376,15 +394,15 @@ const docTemplate = `{
                 "tags": [
                     "Order"
                 ],
-                "summary": "Update Order record",
+                "summary": "Update an Order",
                 "parameters": [
                     {
-                        "description": "UpdatePayload",
+                        "description": "UpdateOrderPayload",
                         "name": "payload",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controller.UpdatePayload"
+                            "$ref": "#/definitions/controller.UpdateOrderPayload"
                         }
                     }
                 ],
@@ -395,11 +413,22 @@ const docTemplate = `{
                             "$ref": "#/definitions/order.Order"
                         }
                     },
-                    "500": {
-                        "description": "{\\\"error\\\": \\Internal Server Error\\\"}",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/controller.HTTPError"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/controller.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.HTTPError"
                         }
                     }
                 }
@@ -435,10 +464,21 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "{\\\"error\\\": \\Invalid identifier informed\\\"}",
+                        "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/controller.HTTPError"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/controller.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.HTTPError"
                         }
                     }
                 }
@@ -613,6 +653,14 @@ const docTemplate = `{
                 }
             }
         },
+        "controller.HTTPError": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
         "controller.RemoveProductPayload": {
             "type": "object",
             "required": [
@@ -630,7 +678,7 @@ const docTemplate = `{
                 }
             }
         },
-        "controller.UpdatePayload": {
+        "controller.UpdateOrderPayload": {
             "type": "object",
             "required": [
                 "order_id",
@@ -642,7 +690,8 @@ const docTemplate = `{
                     "format": "uuid"
                 },
                 "status": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "paid"
                 }
             }
         },

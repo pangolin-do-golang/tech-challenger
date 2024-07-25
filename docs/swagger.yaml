@@ -64,6 +64,11 @@ definitions:
     - product_id
     - quantity
     type: object
+  controller.HTTPError:
+    properties:
+      error:
+        type: string
+    type: object
   controller.RemoveProductPayload:
     properties:
       client_id:
@@ -76,12 +81,13 @@ definitions:
     - client_id
     - product_id
     type: object
-  controller.UpdatePayload:
+  controller.UpdateOrderPayload:
     properties:
       order_id:
         format: uuid
         type: string
       status:
+        example: paid
         type: string
     required:
     - order_id
@@ -336,6 +342,10 @@ paths:
             items:
               $ref: '#/definitions/order.Order'
             type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controller.HTTPError'
       summary: Get order list
       tags:
       - Order
@@ -357,11 +367,18 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/order.Order'
-        "500":
-          description: '{\"error\": \Internal Server Error\"}'
+        "400":
+          description: Bad Request
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/controller.HTTPError'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/controller.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controller.HTTPError'
       summary: Create order from Cart
       tags:
       - Order
@@ -369,13 +386,14 @@ paths:
     patch:
       consumes:
       - application/json
+      description: Update by json an Order
       parameters:
-      - description: UpdatePayload
+      - description: UpdateOrderPayload
         in: body
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/controller.UpdatePayload'
+          $ref: '#/definitions/controller.UpdateOrderPayload'
       produces:
       - application/json
       responses:
@@ -383,12 +401,19 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/order.Order'
-        "500":
-          description: '{\"error\": \Internal Server Error\"}'
+        "400":
+          description: Bad Request
           schema:
-            additionalProperties: true
-            type: object
-      summary: Update Order record
+            $ref: '#/definitions/controller.HTTPError'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/controller.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controller.HTTPError'
+      summary: Update an Order
       tags:
       - Order
   /orders/{id}:
@@ -410,10 +435,17 @@ paths:
           schema:
             $ref: '#/definitions/order.Order'
         "400":
-          description: '{\"error\": \Invalid identifier informed\"}'
+          description: Bad Request
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/controller.HTTPError'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/controller.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controller.HTTPError'
       summary: Get order by ID
       tags:
       - Order
