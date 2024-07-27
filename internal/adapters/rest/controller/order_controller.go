@@ -106,13 +106,13 @@ func (ctrl *OrderController) Get(c *gin.Context) {
 }
 
 type UpdateOrderPayload struct {
-	OrderID uuid.UUID `json:"order_id" binding:"required" format:"uuid"`
-	Status  string    `json:"status" binding:"required" example:"paid"`
+	Status string `json:"status" binding:"required" example:"paid"`
 }
 
 // Update Order godoc
 // @Summary Update an Order
 // @Description Update by json an Order
+// @Param id path string true "ID of the Order"
 // @Param payload body controller.UpdateOrderPayload true "UpdateOrderPayload"
 // @Tags Order
 // @Accept  json
@@ -123,6 +123,7 @@ type UpdateOrderPayload struct {
 // @Failure 500 {object} HTTPError
 // @Router /orders/:id [patch]
 func (ctrl *OrderController) Update(c *gin.Context) {
+	id, err := uuid.Parse(c.Param("id"))
 	payload := &UpdateOrderPayload{}
 
 	if err := c.ShouldBindJSON(&payload); err != nil {
@@ -132,7 +133,7 @@ func (ctrl *OrderController) Update(c *gin.Context) {
 	}
 
 	o, err := ctrl.service.Update(&order.Order{
-		ID:     payload.OrderID,
+		ID:     id,
 		Status: payload.Status,
 	})
 	if err != nil {
