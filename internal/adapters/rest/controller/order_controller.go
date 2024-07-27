@@ -121,14 +121,13 @@ type UpdateOrderPayload struct {
 // @Failure 400 {object} HTTPError
 // @Failure 422 {object} HTTPError
 // @Failure 500 {object} HTTPError
-// @Router /orders/:id [patch]
+// @Router /orders/{id} [patch]
 func (ctrl *OrderController) Update(c *gin.Context) {
 	id, err := uuid.Parse(c.Param("id"))
 	payload := &UpdateOrderPayload{}
 
 	if err := c.ShouldBindJSON(&payload); err != nil {
 		ctrl.Error(c, errutil.NewInputError(err))
-
 		return
 	}
 
@@ -138,7 +137,6 @@ func (ctrl *OrderController) Update(c *gin.Context) {
 	})
 	if err != nil {
 		ctrl.Error(c, err)
-
 		return
 	}
 

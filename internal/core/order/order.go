@@ -49,7 +49,7 @@ func (o Order) ValidateStatusTransition(nextStatus string) error {
 	default:
 		return ErrInvalidStatus
 	}
-	return ErrInvalidStatus
+	return nil
 }
 
 type Product struct {

@@ -46,7 +46,7 @@ func (s *Service) GetAll() ([]Order, error) {
 func (s *Service) Update(order *Order) (*Order, error) {
 	o, err := s.OrderRepository.Get(order.ID)
 	if err != nil {
-		return nil, errutil.NewSystemError(err, "order not found")
+		return nil, errutil.NewBusinessError(err, "order not found")
 	}
 
 	if err := o.ValidateStatusTransition(order.Status); err != nil {
