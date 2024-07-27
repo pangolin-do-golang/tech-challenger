@@ -382,9 +382,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/orders/:id": {
-            "patch": {
-                "description": "Update by json an Order",
+        "/orders/{id}": {
+            "get": {
+                "description": "Get an order by ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -394,23 +394,14 @@ const docTemplate = `{
                 "tags": [
                     "Order"
                 ],
-                "summary": "Update an Order",
+                "summary": "Get order by ID",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "ID of the Order",
+                        "description": "ID of the order",
                         "name": "id",
                         "in": "path",
                         "required": true
-                    },
-                    {
-                        "description": "UpdateOrderPayload",
-                        "name": "payload",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/controller.UpdateOrderPayload"
-                        }
                     }
                 ],
                 "responses": {
@@ -439,11 +430,9 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/orders/{id}": {
-            "get": {
-                "description": "Get an order by ID",
+            },
+            "patch": {
+                "description": "Update by json an Order",
                 "consumes": [
                     "application/json"
                 ],
@@ -453,14 +442,23 @@ const docTemplate = `{
                 "tags": [
                     "Order"
                 ],
-                "summary": "Get order by ID",
+                "summary": "Update an Order",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "ID of the order",
+                        "description": "ID of the Order",
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "UpdateOrderPayload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.UpdateOrderPayload"
+                        }
                     }
                 ],
                 "responses": {

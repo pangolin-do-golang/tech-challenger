@@ -378,7 +378,39 @@ paths:
       summary: Create order from Cart
       tags:
       - Order
-  /orders/:id:
+  /orders/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get an order by ID
+      parameters:
+      - description: ID of the order
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/order.Order'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controller.HTTPError'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/controller.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controller.HTTPError'
+      summary: Get order by ID
+      tags:
+      - Order
     patch:
       consumes:
       - application/json
@@ -415,39 +447,6 @@ paths:
           schema:
             $ref: '#/definitions/controller.HTTPError'
       summary: Update an Order
-      tags:
-      - Order
-  /orders/{id}:
-    get:
-      consumes:
-      - application/json
-      description: Get an order by ID
-      parameters:
-      - description: ID of the order
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/order.Order'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/controller.HTTPError'
-        "422":
-          description: Unprocessable Entity
-          schema:
-            $ref: '#/definitions/controller.HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/controller.HTTPError'
-      summary: Get order by ID
       tags:
       - Order
   /product:
