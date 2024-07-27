@@ -83,14 +83,10 @@ definitions:
     type: object
   controller.UpdateOrderPayload:
     properties:
-      order_id:
-        format: uuid
-        type: string
       status:
         example: paid
         type: string
     required:
-    - order_id
     - status
     type: object
   customer.Customer:
@@ -388,6 +384,11 @@ paths:
       - application/json
       description: Update by json an Order
       parameters:
+      - description: ID of the Order
+        in: path
+        name: id
+        required: true
+        type: string
       - description: UpdateOrderPayload
         in: body
         name: payload

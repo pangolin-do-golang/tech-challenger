@@ -397,6 +397,13 @@ const docTemplate = `{
                 "summary": "Update an Order",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "ID of the Order",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
                         "description": "UpdateOrderPayload",
                         "name": "payload",
                         "in": "body",
@@ -681,14 +688,9 @@ const docTemplate = `{
         "controller.UpdateOrderPayload": {
             "type": "object",
             "required": [
-                "order_id",
                 "status"
             ],
             "properties": {
-                "order_id": {
-                    "type": "string",
-                    "format": "uuid"
-                },
                 "status": {
                     "type": "string",
                     "example": "paid"
