@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/pangolin-do-golang/tech-challenge/internal/core/cart"
 	"github.com/pangolin-do-golang/tech-challenge/internal/core/product"
-	"github.com/pangolin-do-golang/tech-challenge/internal/domainerrors"
+	"github.com/pangolin-do-golang/tech-challenge/internal/errutil"
 )
 
 type Service struct {
@@ -29,8 +29,8 @@ func NewOrderService(repo IOrderRepository, orderProductRepository IOrderProduct
 func (s *Service) Get(id uuid.UUID) (*Order, error) {
 	o, err := s.OrderRepository.Get(id)
 	if err != nil {
-		if errors.Is(err, domainerrors.ErrRecordNotFound) {
-			return nil, domainerrors.NewBusinessError(err, "order not found")
+		if errors.Is(err, errutil.ErrRecordNotFound) {
+			return nil, errutil.NewBusinessError(err, "order not found")
 		}
 
 		return nil, err
@@ -46,11 +46,11 @@ func (s *Service) GetAll() ([]Order, error) {
 func (s *Service) Update(order *Order) (*Order, error) {
 	o, err := s.OrderRepository.Get(order.ID)
 	if err != nil {
-		return nil, domainerrors.NewSystemError(err, "order not found")
+		return nil, errutil.NewSystemError(err, "order not found")
 	}
 
 	if err := o.ValidateStatusTransition(order.Status); err != nil {
-		return nil, domainerrors.NewBusinessError(err, err.Error())
+		return nil, errutil.NewBusinessError(err, err.Error())
 	}
 
 	o.Status = order.Status

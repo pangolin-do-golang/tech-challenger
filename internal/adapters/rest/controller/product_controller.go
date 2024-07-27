@@ -4,10 +4,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/pangolin-do-golang/tech-challenge/internal/core/product"
+	"github.com/pangolin-do-golang/tech-challenge/internal/errutil"
 	"net/http"
 )
 
 type ProductController struct {
+	AbstractController
 	service *product.Service
 }
 
@@ -32,12 +34,8 @@ func (ctrl *ProductController) Search(c *gin.Context) {
 	category := c.Query("category")
 
 	products, err := ctrl.service.Search(search, category)
-
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "something went bad :(",
-		})
-
+		ctrl.Error(c, err)
 		return
 	}
 
@@ -57,23 +55,15 @@ func (ctrl *ProductController) Delete(c *gin.Context) {
 	id, err := uuid.Parse(c.Param("id"))
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid identifier informed.",
-		})
-
+		ctrl.Error(c, errutil.NewInputError(err))
 		return
 	}
 
 	err = ctrl.service.Delete(id)
-
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "something went bad :(",
-		})
-
+		ctrl.Error(c, err)
 		return
 	}
 
 	c.JSON(http.StatusNoContent, gin.H{})
-
 }

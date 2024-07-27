@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/pangolin-do-golang/tech-challenge/internal/core/cart"
+	"github.com/pangolin-do-golang/tech-challenge/internal/errutil"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -9,6 +10,7 @@ import (
 )
 
 type CartController struct {
+	AbstractController
 	service cart.IService
 }
 
@@ -38,8 +40,7 @@ func (ctrl CartController) AddProduct(c *gin.Context) {
 	payload := &AddProductPayload{}
 	err := c.BindJSON(payload)
 	if err != nil {
-		// TODO melhorar retorno de validação
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctrl.Error(c, errutil.NewInputError(err))
 		return
 	}
 
@@ -51,7 +52,7 @@ func (ctrl CartController) AddProduct(c *gin.Context) {
 	})
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
+		ctrl.Error(c, err)
 		return
 	}
 
@@ -78,7 +79,7 @@ func (ctrl CartController) EditProduct(c *gin.Context) {
 	payload := &EditProductPayload{}
 	err := c.BindJSON(payload)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctrl.Error(c, errutil.NewInputError(err))
 		return
 	}
 
@@ -89,7 +90,7 @@ func (ctrl CartController) EditProduct(c *gin.Context) {
 		Comments:  payload.Comments,
 	})
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
+		ctrl.Error(c, err)
 		return
 	}
 
@@ -114,13 +115,13 @@ func (ctrl CartController) RemoveProduct(c *gin.Context) {
 	payload := &RemoveProductPayload{}
 	err := c.BindJSON(payload)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctrl.Error(c, errutil.NewInputError(err))
 		return
 	}
 
 	err = ctrl.service.RemoveProduct(c.Request.Context(), payload.ClientID, payload.ProductID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
+		ctrl.Error(c, err)
 		return
 	}
 

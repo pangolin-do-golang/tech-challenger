@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"github.com/pangolin-do-golang/tech-challenge/internal/domainerrors"
+	"github.com/pangolin-do-golang/tech-challenge/internal/errutil"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -60,7 +60,7 @@ func (ctrl *OrderController) Create(c *gin.Context) {
 	payload := &CreateOrderPayload{}
 
 	if err := c.ShouldBindJSON(&payload); err != nil {
-		ctrl.Error(c, domainerrors.NewInputError(err, err.Error()))
+		ctrl.Error(c, errutil.NewInputError(err))
 
 		return
 	}
@@ -91,7 +91,7 @@ func (ctrl *OrderController) Get(c *gin.Context) {
 	id, err := uuid.Parse(c.Param("id"))
 
 	if err != nil {
-		ctrl.Error(c, domainerrors.NewInputError(err, "Invalid identifier informed"))
+		ctrl.Error(c, errutil.NewInputError(err))
 		return
 	}
 
@@ -127,7 +127,7 @@ func (ctrl *OrderController) Update(c *gin.Context) {
 	payload := &UpdateOrderPayload{}
 
 	if err := c.ShouldBindJSON(&payload); err != nil {
-		ctrl.Error(c, domainerrors.NewInputError(err, err.Error()))
+		ctrl.Error(c, errutil.NewInputError(err))
 
 		return
 	}

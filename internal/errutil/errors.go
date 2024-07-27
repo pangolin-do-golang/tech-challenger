@@ -1,16 +1,8 @@
-package domainerrors
+package errutil
 
 import "errors"
 
 var ErrRecordNotFound = errors.New("record not found")
-
-func Is(err, target error) bool {
-	return errors.Is(err, target)
-}
-
-func As(err error, target any) bool {
-	return errors.As(err, target)
-}
 
 type Error struct {
 	Message       string
@@ -38,9 +30,8 @@ func NewBusinessError(err error, mes string) *Error {
 	}
 }
 
-func NewInputError(err error, mes string) *Error {
+func NewInputError(err error) *Error {
 	return &Error{
-		Message:       mes,
 		originalError: err,
 		Type:          "INPUT",
 	}

@@ -1,9 +1,10 @@
 package db
 
 import (
+	"errors"
 	"github.com/google/uuid"
 	"github.com/pangolin-do-golang/tech-challenge/internal/core/customer"
-	"github.com/pangolin-do-golang/tech-challenge/internal/domainerrors"
+	"github.com/pangolin-do-golang/tech-challenge/internal/errutil"
 	"gorm.io/gorm"
 )
 
@@ -52,8 +53,8 @@ func (r *PostgresCustomerRepository) Update(customerId uuid.UUID, cust customer.
 	var record CustomerPostgres
 	err := r.db.First(&record, customerId).Error
 
-	if domainerrors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, domainerrors.ErrRecordNotFound
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, errutil.ErrRecordNotFound
 	}
 
 	record = CustomerPostgres{
@@ -82,8 +83,8 @@ func (r *PostgresCustomerRepository) Delete(customerId uuid.UUID) error {
 	var record CustomerPostgres
 	err := r.db.Delete(&record, customerId).Error
 
-	if domainerrors.Is(err, gorm.ErrRecordNotFound) {
-		return domainerrors.ErrRecordNotFound
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return errutil.ErrRecordNotFound
 	}
 
 	if err != nil {
@@ -98,8 +99,8 @@ func (r *PostgresCustomerRepository) GetAll() ([]customer.Customer, error) {
 
 	err := r.db.Find(&records).Error
 
-	if domainerrors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, domainerrors.ErrRecordNotFound
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, errutil.ErrRecordNotFound
 	}
 
 	if err != nil {
@@ -125,8 +126,8 @@ func (r *PostgresCustomerRepository) GetByCpf(customerCpf string) (*customer.Cus
 
 	err := r.db.Where("cpf = ?", customerCpf).First(&record).Error
 
-	if domainerrors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, domainerrors.ErrRecordNotFound
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, errutil.ErrRecordNotFound
 	}
 
 	if err != nil {

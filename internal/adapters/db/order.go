@@ -3,7 +3,7 @@ package db
 import (
 	"github.com/google/uuid"
 	"github.com/pangolin-do-golang/tech-challenge/internal/core/order"
-	"github.com/pangolin-do-golang/tech-challenge/internal/domainerrors"
+	"github.com/pangolin-do-golang/tech-challenge/internal/errutil"
 	"gorm.io/gorm"
 )
 
@@ -64,7 +64,7 @@ func (r *PostgresOrderRepository) Get(id uuid.UUID) (*order.Order, error) {
 	var record OrderPostgres
 
 	if err := r.db.First(&record, "id = ?", id).Error; err != nil {
-		return nil, domainerrors.ErrRecordNotFound
+		return nil, errutil.ErrRecordNotFound
 	}
 
 	return &order.Order{

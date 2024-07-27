@@ -1,8 +1,9 @@
 package controller
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
-	"github.com/pangolin-do-golang/tech-challenge/internal/domainerrors"
+	"github.com/pangolin-do-golang/tech-challenge/internal/errutil"
 )
 
 type AbstractController struct{}
@@ -12,13 +13,13 @@ type HTTPError struct {
 }
 
 func (ctrl *AbstractController) Error(c *gin.Context, err error) {
-	var e *domainerrors.Error
-	if domainerrors.As(err, &e) {
+	var e *errutil.Error
+	if errors.As(err, &e) {
 		switch e.Type {
 		case "BUSINESS":
 			c.JSON(422, &HTTPError{Message: e.Message})
 		case "INPUT":
-			c.JSON(400, &HTTPError{Message: e.Message})
+			c.JSON(400, &HTTPError{Message: "Bad Request"})
 		default:
 			c.JSON(500, &HTTPError{Message: "Internal Server Error"})
 		}
