@@ -18,6 +18,7 @@ const (
 	StatusFinished  = "FINISHED"
 	StatusPaid      = "PAID"
 	StatusDeclined  = "DECLINED"
+	StatusCanceled  = "CANCELED"
 )
 
 type Order struct {
@@ -46,6 +47,8 @@ func (o Order) ValidateStatusTransition(nextStatus string) error {
 		if nextStatus != StatusFinished {
 			return ErrInvalidStatus
 		}
+	case StatusCanceled:
+		return ErrInvalidStatus
 	default:
 		return ErrInvalidStatus
 	}

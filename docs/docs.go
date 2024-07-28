@@ -89,6 +89,38 @@ const docTemplate = `{
                 }
             }
         },
+        "/cart/overview": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cart"
+                ],
+                "parameters": [
+                    {
+                        "description": "GetCartPayload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.GetCartPayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/cart/remove-product": {
             "post": {
                 "description": "Removes a Product from Customer's Cart",
@@ -124,7 +156,7 @@ const docTemplate = `{
         },
         "/customer": {
             "get": {
-                "description": "Get all customer's list",
+                "description": "Overview all customer's list",
                 "consumes": [
                     "application/json"
                 ],
@@ -134,7 +166,7 @@ const docTemplate = `{
                 "tags": [
                     "Customer"
                 ],
-                "summary": "Get customer list",
+                "summary": "Overview customer list",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -189,7 +221,7 @@ const docTemplate = `{
         },
         "/customer/{cpf}": {
             "get": {
-                "description": "Get a customer by cpf",
+                "description": "Overview a customer by cpf",
                 "consumes": [
                     "application/json"
                 ],
@@ -199,7 +231,7 @@ const docTemplate = `{
                 "tags": [
                     "Customer"
                 ],
-                "summary": "Get customer by cpf",
+                "summary": "Overview customer by cpf",
                 "parameters": [
                     {
                         "type": "string",
@@ -655,6 +687,18 @@ const docTemplate = `{
                 "quantity": {
                     "type": "integer",
                     "example": 2
+                }
+            }
+        },
+        "controller.GetCartPayload": {
+            "type": "object",
+            "required": [
+                "client_id"
+            ],
+            "properties": {
+                "client_id": {
+                    "type": "string",
+                    "format": "uuid"
                 }
             }
         },

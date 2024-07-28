@@ -58,8 +58,19 @@ func (s *Service) Update(order *Order) (*Order, error) {
 	if err != nil {
 		return nil, err
 	}
+	oldOrder := *o
 
-	return o, nil
+	// "simula" o período de uma tarefa async/em segundo plano pegar o
+	// pedido "pago" e mudar o status para "preparando"1
+	// dessa forma o usuário recebe o status "PAID"
+	if o.Status == StatusPaid {
+		o.Status = StatusPreparing
+		if err := s.OrderRepository.Update(o); err != nil {
+			return nil, err
+		}
+	}
+
+	return &oldOrder, nil
 }
 
 func (s *Service) Create(clientID uuid.UUID) (*Order, error) {
@@ -108,7 +119,7 @@ func (s *Service) Create(clientID uuid.UUID) (*Order, error) {
 	}
 
 	o.TotalAmount = total
-	o.Status = StatusPreparing
+	o.Status = StatusPending
 	err = s.OrderRepository.Update(o)
 	if err != nil {
 		return nil, err

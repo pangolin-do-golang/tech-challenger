@@ -69,8 +69,8 @@ func (s *Service) Cleanup(clientID uuid.UUID) error {
 	return nil
 }
 
-func (s *Service) AddProduct(ctx context.Context, product *Product) error {
-	cart, err := s.LoadCart(ctx, product.ClientID)
+func (s *Service) AddProduct(ctx context.Context, clientID uuid.UUID, product *Product) error {
+	cart, err := s.LoadCart(ctx, clientID)
 	if err != nil {
 		return err
 	}
@@ -99,8 +99,8 @@ func (s *Service) RemoveProduct(ctx context.Context, clientID uuid.UUID, product
 	return nil
 }
 
-func (s *Service) EditProduct(ctx context.Context, product *Product) error {
-	cart, err := s.LoadCart(ctx, product.ClientID)
+func (s *Service) EditProduct(ctx context.Context, clientID uuid.UUID, product *Product) error {
+	cart, err := s.LoadCart(ctx, clientID)
 	if err != nil {
 		return err
 	}

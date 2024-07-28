@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/pangolin-do-golang/tech-challenge/internal/errutil"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -133,7 +134,7 @@ func (ctrl *OrderController) Update(c *gin.Context) {
 
 	o, err := ctrl.service.Update(&order.Order{
 		ID:     id,
-		Status: payload.Status,
+		Status: strings.ToUpper(payload.Status),
 	})
 	if err != nil {
 		ctrl.Error(c, err)

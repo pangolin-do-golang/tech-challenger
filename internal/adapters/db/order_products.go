@@ -14,11 +14,12 @@ type PostgresOrderProductsRepository struct {
 
 type OrderProductPostgres struct {
 	BaseModel
-	OrderID   uuid.UUID     `gorm:"type:uuid"`
-	ProductID uuid.UUID     `gorm:"type:uuid"`
-	Quantity  int           `gorm:"quantity"`
-	Comments  string        `gorm:"comments"`
-	Order     OrderPostgres `gorm:"foreignKey:OrderID"`
+	OrderID   uuid.UUID       `gorm:"type:uuid"`
+	ProductID uuid.UUID       `gorm:"type:uuid"`
+	Quantity  int             `gorm:"quantity"`
+	Comments  string          `gorm:"comments"`
+	Order     OrderPostgres   `gorm:"foreignKey:OrderID"`
+	Product   ProductPostgres `gorm:"foreignKey:ProductID"`
 }
 
 func (op *OrderProductPostgres) TableName() string {

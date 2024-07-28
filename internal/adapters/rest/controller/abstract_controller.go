@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/pangolin-do-golang/tech-challenge/internal/errutil"
+	"log"
 )
 
 type AbstractController struct{}
@@ -13,6 +14,7 @@ type HTTPError struct {
 }
 
 func (ctrl *AbstractController) Error(c *gin.Context, err error) {
+	log.Println(err)
 	var e *errutil.Error
 	if errors.As(err, &e) {
 		switch e.Type {

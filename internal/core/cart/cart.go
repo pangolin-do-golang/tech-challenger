@@ -13,10 +13,9 @@ type Cart struct {
 }
 
 type Product struct {
-	ClientID  uuid.UUID `json:"client_id"`
 	ProductID uuid.UUID `json:"product_id"`
 	Quantity  int       `json:"quantity"`
-	Comments  string    `json:"comments"`
+	Comments  string    `json:"comments,omitempty"`
 }
 
 type ICartRepository interface {
@@ -34,8 +33,8 @@ type ICartProductRepository interface {
 type IService interface {
 	LoadCart(ctx context.Context, clientID uuid.UUID) (*Cart, error)
 	GetFullCart(clientID uuid.UUID) (*Cart, error)
-	AddProduct(ctx context.Context, product *Product) error
+	AddProduct(ctx context.Context, clientID uuid.UUID, product *Product) error
 	RemoveProduct(ctx context.Context, clientID uuid.UUID, productID uuid.UUID) error
-	EditProduct(ctx context.Context, product *Product) error
+	EditProduct(ctx context.Context, clientID uuid.UUID, product *Product) error
 	Cleanup(clientID uuid.UUID) error
 }

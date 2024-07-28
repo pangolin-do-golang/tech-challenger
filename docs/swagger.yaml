@@ -64,6 +64,14 @@ definitions:
     - product_id
     - quantity
     type: object
+  controller.GetCartPayload:
+    properties:
+      client_id:
+        format: uuid
+        type: string
+    required:
+    - client_id
+    type: object
   controller.HTTPError:
     properties:
       error:
@@ -185,6 +193,26 @@ paths:
             type: object
       tags:
       - Cart
+  /cart/overview:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: GetCartPayload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/controller.GetCartPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      tags:
+      - Cart
   /cart/remove-product:
     post:
       consumes:
@@ -210,7 +238,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get all customer's list
+      description: Overview all customer's list
       produces:
       - application/json
       responses:
@@ -220,7 +248,7 @@ paths:
             items:
               $ref: '#/definitions/customer.Customer'
             type: array
-      summary: Get customer list
+      summary: Overview customer list
       tags:
       - Customer
     post:
@@ -253,7 +281,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get a customer by cpf
+      description: Overview a customer by cpf
       parameters:
       - description: customer cpf
         in: path
@@ -269,7 +297,7 @@ paths:
             $ref: '#/definitions/customer.Customer'
         "404":
           description: Customer not found
-      summary: Get customer by cpf
+      summary: Overview customer by cpf
       tags:
       - Customer
   /customer/{id}:

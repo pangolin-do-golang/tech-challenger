@@ -14,10 +14,12 @@ type PostgresCartProductsRepository struct {
 
 type CartProductsPostgres struct {
 	BaseModel
-	CartID    uuid.UUID `gorm:"type:uuid" json:"cart_id"`
-	ProductID uuid.UUID `gorm:"type:uuid" json:"product_id"`
-	Quantity  int       `gorm:"quantity"`
-	Comments  string    `gorm:"comments"`
+	CartID    uuid.UUID       `gorm:"type:uuid"`
+	ProductID uuid.UUID       `gorm:"type:uuid"`
+	Quantity  int             `gorm:"quantity"`
+	Comments  string          `gorm:"comments"`
+	Cart      CartPostgres    `gorm:"foreignKey:CartID"`
+	Product   ProductPostgres `gorm:"foreignKey:ProductID"`
 }
 
 func (op *CartProductsPostgres) TableName() string {

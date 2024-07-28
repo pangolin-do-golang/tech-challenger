@@ -126,9 +126,9 @@ func (ctrl CustomerController) Delete(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-// GetAll Get all customer's list
-// @Summary Get customer list
-// @Description Get all customer's list
+// GetAll Overview all customer's list
+// @Summary Overview customer list
+// @Description Overview all customer's list
 // @Tags Customer
 // @Accept json
 // @Produce json
@@ -144,9 +144,9 @@ func (ctrl CustomerController) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, customerSlice)
 }
 
-// GetByCpf Get a customer by cpf
-// @Summary Get customer by cpf
-// @Description Get a customer by cpf
+// GetByCpf Overview a customer by cpf
+// @Summary Overview customer by cpf
+// @Description Overview a customer by cpf
 // @Tags Customer
 // @Param cpf path string true "customer cpf"
 // @Accept json
