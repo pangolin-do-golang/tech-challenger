@@ -125,9 +125,6 @@ func buildGetAllQuery() string {
 		order.StatusCreated,
 	}
 
-	ignoredStatusCondition := buildIgnoredStatusCondition(ignoredStatus)
-	statusCase := buildSortedStatusCase(statusSortedPriority)
-
 	return fmt.Sprintf(`
 		SELECT * FROM "order"
 		WHERE status NOT IN (%s)
@@ -135,8 +132,8 @@ func buildGetAllQuery() string {
 			CASE %s
 			END, created_at
 		`,
-		ignoredStatusCondition,
-		statusCase,
+		buildIgnoredStatusCondition(ignoredStatus),
+		buildSortedStatusCase(statusSortedPriority),
 	)
 }
 
