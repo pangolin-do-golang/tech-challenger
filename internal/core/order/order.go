@@ -7,6 +7,16 @@ import (
 	"github.com/google/uuid"
 )
 
+const (
+	StatusPending   = "PENDING"
+	StatusCreated   = "CREATED"
+	StatusPreparing = "PREPARING"
+	StatusReady     = "READY"
+	StatusFinished  = "FINISHED"
+	StatusPaid      = "PAID"
+	StatusDeclined  = "DECLINED"
+)
+
 type Order struct {
 	ID          uuid.UUID `json:"id"`
 	CreatedAt   time.Time `json:"created_at"`
