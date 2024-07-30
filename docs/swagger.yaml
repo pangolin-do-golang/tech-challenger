@@ -64,6 +64,19 @@ definitions:
     - product_id
     - quantity
     type: object
+  controller.GetCartPayload:
+    properties:
+      client_id:
+        format: uuid
+        type: string
+    required:
+    - client_id
+    type: object
+  controller.HTTPError:
+    properties:
+      error:
+        type: string
+    type: object
   controller.RemoveProductPayload:
     properties:
       client_id:
@@ -75,6 +88,14 @@ definitions:
     required:
     - client_id
     - product_id
+    type: object
+  controller.UpdateOrderPayload:
+    properties:
+      status:
+        example: paid
+        type: string
+    required:
+    - status
     type: object
   customer.Customer:
     properties:
@@ -91,22 +112,22 @@ definitions:
     type: object
   order.Order:
     properties:
-      clientID:
+      client_id:
         type: string
-      createdAt:
+      created_at:
         type: string
       id:
         type: string
       status:
         type: string
-      totalAmount:
+      total_amount:
         type: number
     type: object
   product.Product:
     properties:
       category:
         type: string
-      createdAt:
+      created_at:
         type: string
       description:
         type: string
@@ -127,7 +148,7 @@ paths:
   /cart/add-product:
     post:
       consumes:
-      - core/json
+      - application/json
       description: Adds a Product to Customer's Cart
       parameters:
       - description: AddProductPayload
@@ -137,7 +158,7 @@ paths:
         schema:
           $ref: '#/definitions/controller.AddProductPayload'
       produces:
-      - core/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -151,7 +172,7 @@ paths:
   /cart/edit-product:
     post:
       consumes:
-      - core/json
+      - application/json
       description: Edits a Product from Customer's Cart
       parameters:
       - description: EditProductPayload
@@ -161,7 +182,7 @@ paths:
         schema:
           $ref: '#/definitions/controller.EditProductPayload'
       produces:
-      - core/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -172,10 +193,30 @@ paths:
             type: object
       tags:
       - Cart
+  /cart/overview:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: GetCartPayload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/controller.GetCartPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      tags:
+      - Cart
   /cart/remove-product:
     post:
       consumes:
-      - core/json
+      - application/json
       description: Removes a Product from Customer's Cart
       parameters:
       - description: RemoveProductPayload
@@ -185,7 +226,7 @@ paths:
         schema:
           $ref: '#/definitions/controller.RemoveProductPayload'
       produces:
-      - core/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -196,10 +237,10 @@ paths:
   /customer:
     get:
       consumes:
-      - core/json
-      description: Get all customer's list
+      - application/json
+      description: Overview all customer's list
       produces:
-      - core/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -207,12 +248,12 @@ paths:
             items:
               $ref: '#/definitions/customer.Customer'
             type: array
-      summary: Get customer list
+      summary: Overview customer list
       tags:
       - Customer
     post:
       consumes:
-      - core/json
+      - application/json
       description: Create a new customer
       parameters:
       - description: CustomerPayload
@@ -222,7 +263,7 @@ paths:
         schema:
           $ref: '#/definitions/controller.CustomerPayload'
       produces:
-      - core/json
+      - application/json
       responses:
         "200":
           description: customer.Customer
@@ -239,8 +280,8 @@ paths:
   /customer/{cpf}:
     get:
       consumes:
-      - core/json
-      description: Get a customer by cpf
+      - application/json
+      description: Overview a customer by cpf
       parameters:
       - description: customer cpf
         in: path
@@ -248,7 +289,7 @@ paths:
         required: true
         type: string
       produces:
-      - core/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -256,13 +297,13 @@ paths:
             $ref: '#/definitions/customer.Customer'
         "404":
           description: Customer not found
-      summary: Get customer by cpf
+      summary: Overview customer by cpf
       tags:
       - Customer
   /customer/{id}:
     delete:
       consumes:
-      - core/json
+      - application/json
       description: Delete a customer by id
       parameters:
       - description: "123456789"
@@ -271,7 +312,7 @@ paths:
         required: true
         type: string
       produces:
-      - core/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -282,7 +323,7 @@ paths:
       - Customer
     put:
       consumes:
-      - core/json
+      - application/json
       description: Update a customer by id
       parameters:
       - description: ID of the customer
@@ -297,7 +338,7 @@ paths:
         schema:
           $ref: '#/definitions/controller.CustomerPayload'
       produces:
-      - core/json
+      - application/json
       responses:
         "200":
           description: customer.Customer
@@ -311,13 +352,13 @@ paths:
       summary: Update customer
       tags:
       - Customer
-  /order:
+  /orders:
     get:
       consumes:
-      - core/json
+      - application/json
       description: Get all order's list
       produces:
-      - core/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -325,12 +366,16 @@ paths:
             items:
               $ref: '#/definitions/order.Order'
             type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controller.HTTPError'
       summary: Get order list
       tags:
       - Order
     post:
       consumes:
-      - core/json
+      - application/json
       description: Create order from Cart
       parameters:
       - description: CreateOrderPayload
@@ -340,25 +385,32 @@ paths:
         schema:
           $ref: '#/definitions/controller.CreateOrderPayload'
       produces:
-      - core/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/order.Order'
-        "500":
-          description: '{\"error\": \Internal Server Error\"}'
+        "400":
+          description: Bad Request
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/controller.HTTPError'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/controller.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controller.HTTPError'
       summary: Create order from Cart
       tags:
       - Order
-  /order/{id}:
+  /orders/{id}:
     get:
       consumes:
-      - core/json
-      description: Get a order by ID
+      - application/json
+      description: Get an order by ID
       parameters:
       - description: ID of the order
         in: path
@@ -366,37 +418,80 @@ paths:
         required: true
         type: string
       produces:
-      - core/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/order.Order'
         "400":
-          description: '{\"error\": \Invalid identifier informed\"}'
+          description: Bad Request
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/controller.HTTPError'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/controller.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controller.HTTPError'
       summary: Get order by ID
+      tags:
+      - Order
+    patch:
+      consumes:
+      - application/json
+      description: Update by json an Order
+      parameters:
+      - description: ID of the Order
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: UpdateOrderPayload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/controller.UpdateOrderPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/order.Order'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controller.HTTPError'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/controller.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controller.HTTPError'
+      summary: Update an Order
       tags:
       - Order
   /product:
     get:
       consumes:
-      - core/json
+      - application/json
       parameters:
       - description: Name of Product
         in: path
         name: search
-        required: true
         type: string
       - description: Category of Product
         in: path
         name: category
-        required: true
         type: string
       produces:
-      - core/json
+      - application/json
       responses:
         "200":
           description: product.Product
@@ -413,7 +508,7 @@ paths:
   /product/{id}:
     delete:
       consumes:
-      - core/json
+      - application/json
       parameters:
       - description: ID of Product
         in: path
@@ -421,7 +516,7 @@ paths:
         required: true
         type: string
       produces:
-      - core/json
+      - application/json
       responses:
         "204":
           description: No Content

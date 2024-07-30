@@ -1,7 +1,9 @@
 package controller
 
 import (
+	"github.com/pangolin-do-golang/tech-challenge/internal/errutil"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -9,6 +11,7 @@ import (
 )
 
 type OrderController struct {
+	AbstractController
 	service order.IOrderService
 }
 
@@ -25,53 +28,17 @@ func NewOrderController(service order.IOrderService) *OrderController {
 // @Accept json
 // @Produce json
 // @Success 200 {object} []order.Order{}
-// @Router /order [get]
-func (ctrl OrderController) GetAll(c *gin.Context) {
+// @Success 500 {object} HTTPError
+// @Router /orders [get]
+func (ctrl *OrderController) GetAll(c *gin.Context) {
 	orderSlice, err := ctrl.service.GetAll()
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-
+		ctrl.Error(c, err)
 		return
 	}
 
 	c.JSON(http.StatusOK, orderSlice)
-}
-
-// Get an order by ID
-// @Summary Get order by ID
-// @Description Get an order by ID
-// @Tags Order
-// @Param id path string true "ID of the order"
-// @Accept json
-// @Produce json
-// @Success 200 {object} order.Order{}
-// @Failure 400 {object} map[string]any "{\"error\": \Invalid identifier informed\"}"
-// @Router /order/{id} [get]
-func (ctrl OrderController) Get(c *gin.Context) {
-	id, err := uuid.Parse(c.Param("id"))
-
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid identifier informed.",
-		})
-
-		return
-	}
-
-	o, err := ctrl.service.Get(id)
-
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-
-		return
-	}
-
-	c.JSON(http.StatusOK, o)
 }
 
 type CreateOrderPayload struct {
@@ -86,25 +53,91 @@ type CreateOrderPayload struct {
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} order.Order{}
-// @Failure 500 {object} map[string]any "{\"error\": \Internal Server Error\"}"
-// @Router /order [post]
-func (ctrl OrderController) Create(c *gin.Context) {
+// @Failure 400 {object} HTTPError
+// @Failure 422 {object} HTTPError
+// @Failure 500 {object} HTTPError
+// @Router /orders [post]
+func (ctrl *OrderController) Create(c *gin.Context) {
 	payload := &CreateOrderPayload{}
 
 	if err := c.ShouldBindJSON(&payload); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		ctrl.Error(c, errutil.NewInputError(err))
 
 		return
 	}
 
 	o, err := ctrl.service.Create(payload.ClientID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
+		ctrl.Error(c, err)
 
+		return
+	}
+
+	c.JSON(http.StatusOK, o)
+}
+
+// Get an order by ID
+// @Summary Get order by ID
+// @Description Get an order by ID
+// @Tags Order
+// @Param id path string true "ID of the order"
+// @Accept json
+// @Produce json
+// @Success 200 {object} order.Order{}
+// @Failure 400 {object} HTTPError
+// @Failure 422 {object} HTTPError
+// @Failure 500 {object} HTTPError
+// @Router /orders/{id} [get]
+func (ctrl *OrderController) Get(c *gin.Context) {
+	id, err := uuid.Parse(c.Param("id"))
+
+	if err != nil {
+		ctrl.Error(c, errutil.NewInputError(err))
+		return
+	}
+
+	o, err := ctrl.service.Get(id)
+	if err != nil {
+		ctrl.Error(c, err)
+
+		return
+	}
+
+	c.JSON(http.StatusOK, o)
+}
+
+type UpdateOrderPayload struct {
+	Status string `json:"status" binding:"required" example:"paid"`
+}
+
+// Update Order godoc
+// @Summary Update an Order
+// @Description Update by json an Order
+// @Param id path string true "ID of the Order"
+// @Param payload body controller.UpdateOrderPayload true "UpdateOrderPayload"
+// @Tags Order
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} order.Order{}
+// @Failure 400 {object} HTTPError
+// @Failure 422 {object} HTTPError
+// @Failure 500 {object} HTTPError
+// @Router /orders/{id} [patch]
+func (ctrl *OrderController) Update(c *gin.Context) {
+	id, err := uuid.Parse(c.Param("id"))
+	payload := &UpdateOrderPayload{}
+
+	if err := c.ShouldBindJSON(&payload); err != nil {
+		ctrl.Error(c, errutil.NewInputError(err))
+		return
+	}
+
+	o, err := ctrl.service.Update(&order.Order{
+		ID:     id,
+		Status: strings.ToUpper(payload.Status),
+	})
+	if err != nil {
+		ctrl.Error(c, err)
 		return
 	}
 

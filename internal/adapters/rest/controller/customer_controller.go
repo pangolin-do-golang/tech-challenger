@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"github.com/pangolin-do-golang/tech-challenge/internal/errutil"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -9,6 +10,7 @@ import (
 )
 
 type CustomerController struct {
+	AbstractController
 	service customer.IService
 }
 
@@ -39,10 +41,7 @@ func (ctrl CustomerController) Create(c *gin.Context) {
 	var payload CustomerPayload
 
 	if err := c.ShouldBindJSON(&payload); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-
+		ctrl.Error(c, errutil.NewInputError(err))
 		return
 	}
 
@@ -54,10 +53,7 @@ func (ctrl CustomerController) Create(c *gin.Context) {
 	})
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-
+		ctrl.Error(c, err)
 		return
 	}
 
@@ -77,22 +73,15 @@ func (ctrl CustomerController) Create(c *gin.Context) {
 // @Router /customer/{id} [put]
 func (ctrl CustomerController) Update(c *gin.Context) {
 	id, err := uuid.Parse(c.Param("id"))
-
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid identifier informed.",
-		})
-
+		ctrl.Error(c, errutil.NewInputError(err))
 		return
 	}
 
 	var payload CustomerPayload
 
 	if err := c.ShouldBindJSON(&payload); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-
+		ctrl.Error(c, errutil.NewInputError(err))
 		return
 	}
 
@@ -104,10 +93,7 @@ func (ctrl CustomerController) Update(c *gin.Context) {
 	})
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-
+		ctrl.Error(c, err)
 		return
 	}
 
@@ -128,27 +114,21 @@ func (ctrl CustomerController) Delete(c *gin.Context) {
 	id, err := uuid.Parse(c.Param("id"))
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid identifier informed.",
-		})
-
+		ctrl.Error(c, errutil.NewInputError(err))
 		return
 	}
 
 	if err := ctrl.service.Delete(id); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-
+		ctrl.Error(c, err)
 		return
 	}
 
 	c.Status(http.StatusOK)
 }
 
-// GetAll Get all customer's list
-// @Summary Get customer list
-// @Description Get all customer's list
+// GetAll Overview all customer's list
+// @Summary Overview customer list
+// @Description Overview all customer's list
 // @Tags Customer
 // @Accept json
 // @Produce json
@@ -156,21 +136,17 @@ func (ctrl CustomerController) Delete(c *gin.Context) {
 // @Router /customer [get]
 func (ctrl CustomerController) GetAll(c *gin.Context) {
 	customerSlice, err := ctrl.service.GetAll()
-
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-
+		ctrl.Error(c, err)
 		return
 	}
 
 	c.JSON(http.StatusOK, customerSlice)
 }
 
-// GetByCpf Get a customer by cpf
-// @Summary Get customer by cpf
-// @Description Get a customer by cpf
+// GetByCpf Overview a customer by cpf
+// @Summary Overview customer by cpf
+// @Description Overview a customer by cpf
 // @Tags Customer
 // @Param cpf path string true "customer cpf"
 // @Accept json
@@ -182,20 +158,13 @@ func (ctrl CustomerController) GetByCpf(c *gin.Context) {
 	cpf := c.Param("cpf")
 
 	customerRecord, err := ctrl.service.GetByCpf(cpf)
-
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-
+		ctrl.Error(c, err)
 		return
 	}
 
 	if customerRecord.Id == uuid.Nil {
-		c.JSON(http.StatusNotFound, gin.H{
-			"NotFound": "Customer not found.",
-		})
-
+		ctrl.Error(c, errutil.NewBusinessError(err, "Customer not found"))
 		return
 	}
 

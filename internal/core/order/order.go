@@ -2,6 +2,8 @@ package order
 
 import (
 	"context"
+	"errors"
+
 	"time"
 
 	"github.com/google/uuid"
@@ -15,7 +17,10 @@ const (
 	StatusFinished  = "FINISHED"
 	StatusPaid      = "PAID"
 	StatusDeclined  = "DECLINED"
+	StatusCanceled  = "CANCELED"
 )
+
+var ErrInvalidStatus = errors.New("invalid status transition")
 
 type Order struct {
 	ID          uuid.UUID `json:"id"`
@@ -23,6 +28,32 @@ type Order struct {
 	ClientID    uuid.UUID `json:"client_id"`
 	TotalAmount float64   `json:"total_amount"`
 	Status      string    `json:"status"`
+}
+
+func (o Order) ValidateStatusTransition(nextStatus string) error {
+	switch o.Status {
+	case StatusCreated:
+		if nextStatus != StatusPending {
+			return ErrInvalidStatus
+		}
+	case StatusPending:
+		if nextStatus != StatusPaid && nextStatus != StatusDeclined {
+			return ErrInvalidStatus
+		}
+	case StatusPaid:
+		if nextStatus != StatusPreparing {
+			return ErrInvalidStatus
+		}
+	case StatusPreparing:
+		if nextStatus != StatusFinished {
+			return ErrInvalidStatus
+		}
+	case StatusCanceled:
+		return ErrInvalidStatus
+	default:
+		return ErrInvalidStatus
+	}
+	return nil
 }
 
 type Product struct {
@@ -33,20 +64,11 @@ type Product struct {
 	Total     float64   `json:"total"`
 }
 
-var Status = struct {
-	Pending   string
-	Created   string
-	Preparing string
-}{
-	Created:   "CREATED",
-	Pending:   "PENDING",
-	Preparing: "PREPARING",
-}
-
 type IOrderService interface {
 	Get(id uuid.UUID) (*Order, error)
 	Create(clientID uuid.UUID) (*Order, error)
 	GetAll() ([]Order, error)
+	Update(order *Order) (*Order, error)
 }
 
 type IOrderProductRepository interface {

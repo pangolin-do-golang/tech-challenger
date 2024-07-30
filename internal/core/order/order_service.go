@@ -2,10 +2,12 @@ package order
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/pangolin-do-golang/tech-challenge/internal/core/cart"
 	"github.com/pangolin-do-golang/tech-challenge/internal/core/product"
+	"github.com/pangolin-do-golang/tech-challenge/internal/errutil"
 )
 
 type Service struct {
@@ -25,11 +27,50 @@ func NewOrderService(repo IOrderRepository, orderProductRepository IOrderProduct
 }
 
 func (s *Service) Get(id uuid.UUID) (*Order, error) {
-	return s.OrderRepository.Get(id)
+	o, err := s.OrderRepository.Get(id)
+	if err != nil {
+		if errors.Is(err, errutil.ErrRecordNotFound) {
+			return nil, errutil.NewBusinessError(err, "order not found")
+		}
+
+		return nil, err
+	}
+
+	return o, nil
 }
 
 func (s *Service) GetAll() ([]Order, error) {
 	return s.OrderRepository.GetAll()
+}
+
+func (s *Service) Update(order *Order) (*Order, error) {
+	o, err := s.OrderRepository.Get(order.ID)
+	if err != nil {
+		return nil, errutil.NewBusinessError(err, "order not found")
+	}
+
+	if err := o.ValidateStatusTransition(order.Status); err != nil {
+		return nil, errutil.NewBusinessError(err, err.Error())
+	}
+
+	o.Status = order.Status
+	err = s.OrderRepository.Update(o)
+	if err != nil {
+		return nil, err
+	}
+	oldOrder := *o
+
+	// "simula" o período de uma tarefa async/em segundo plano pegar o
+	// pedido "pago" e mudar o status para "preparando"1
+	// dessa forma o usuário recebe o status "PAID"
+	if o.Status == StatusPaid {
+		o.Status = StatusPreparing
+		if err := s.OrderRepository.Update(o); err != nil {
+			return nil, err
+		}
+	}
+
+	return &oldOrder, nil
 }
 
 func (s *Service) Create(clientID uuid.UUID) (*Order, error) {
@@ -44,7 +85,7 @@ func (s *Service) Create(clientID uuid.UUID) (*Order, error) {
 
 	order := &Order{
 		ClientID: clientID,
-		Status:   Status.Created,
+		Status:   StatusCreated,
 	}
 
 	o, err := s.OrderRepository.Create(order)
@@ -78,7 +119,7 @@ func (s *Service) Create(clientID uuid.UUID) (*Order, error) {
 	}
 
 	o.TotalAmount = total
-	o.Status = Status.Preparing
+	o.Status = StatusPending
 	err = s.OrderRepository.Update(o)
 	if err != nil {
 		return nil, err

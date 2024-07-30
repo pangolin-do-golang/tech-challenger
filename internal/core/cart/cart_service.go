@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/google/uuid"
-	"github.com/pangolin-do-golang/tech-challenge/internal/domainerrors"
+	"github.com/pangolin-do-golang/tech-challenge/internal/errutil"
 )
 
 type Service struct {
@@ -22,7 +22,7 @@ func NewService(cartRepository ICartRepository, cartProductsRepository ICartProd
 func (s *Service) LoadCart(_ context.Context, clientID uuid.UUID) (*Cart, error) {
 	cart, err := s.CartRepository.Get(clientID)
 	if err != nil {
-		if !errors.Is(err, domainerrors.ErrRecordNotFound) {
+		if !errors.Is(err, errutil.ErrRecordNotFound) {
 			return nil, err
 		}
 
@@ -69,8 +69,8 @@ func (s *Service) Cleanup(clientID uuid.UUID) error {
 	return nil
 }
 
-func (s *Service) AddProduct(ctx context.Context, product *Product) error {
-	cart, err := s.LoadCart(ctx, product.ClientID)
+func (s *Service) AddProduct(ctx context.Context, clientID uuid.UUID, product *Product) error {
+	cart, err := s.LoadCart(ctx, clientID)
 	if err != nil {
 		return err
 	}
@@ -99,8 +99,8 @@ func (s *Service) RemoveProduct(ctx context.Context, clientID uuid.UUID, product
 	return nil
 }
 
-func (s *Service) EditProduct(ctx context.Context, product *Product) error {
-	cart, err := s.LoadCart(ctx, product.ClientID)
+func (s *Service) EditProduct(ctx context.Context, clientID uuid.UUID, product *Product) error {
+	cart, err := s.LoadCart(ctx, clientID)
 	if err != nil {
 		return err
 	}

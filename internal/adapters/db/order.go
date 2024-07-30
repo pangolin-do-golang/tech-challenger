@@ -7,7 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/pangolin-do-golang/tech-challenge/internal/core/order"
-	"github.com/pangolin-do-golang/tech-challenge/internal/domainerrors"
+	"github.com/pangolin-do-golang/tech-challenge/internal/errutil"
 	"gorm.io/gorm"
 )
 
@@ -20,8 +20,8 @@ type OrderPostgres struct {
 	ClientID    uuid.UUID              `gorm:"client_id,type:uuid"`
 	TotalAmount float64                `gorm:"total_amount"`
 	Status      string                 `gorm:"status"`
-	Products    []OrderProductPostgres `gorm:"foreignKey:OrderID"`
 	Customer    CustomerPostgres       `gorm:"foreignKey:ClientID"`
+	Products    []OrderProductPostgres `gorm:"foreignKey:OrderID"`
 }
 
 func (op OrderPostgres) TableName() string {
@@ -33,14 +33,10 @@ func NewPostgresOrderRepository(db *gorm.DB) order.IOrderRepository {
 }
 
 func (r *PostgresOrderRepository) Update(order *order.Order) error {
-	dbOrder := OrderPostgres{
-		BaseModel:   BaseModel{ID: order.ID},
-		ClientID:    order.ClientID,
-		TotalAmount: order.TotalAmount,
-		Status:      order.Status,
-	}
-
-	result := r.db.Save(&dbOrder)
+	result := r.db.Model(&OrderPostgres{}).
+		Where("id", order.ID).
+		Update("status", order.Status).
+		Update("total_amount", order.TotalAmount)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -70,9 +66,7 @@ func (r *PostgresOrderRepository) Get(id uuid.UUID) (*order.Order, error) {
 	var record OrderPostgres
 
 	if err := r.db.First(&record, "id = ?", id).Error; err != nil {
-
-		fmt.Println("Order not found:", err)
-		return nil, err
+		return nil, errutil.ErrRecordNotFound
 	}
 
 	return &order.Order{
@@ -90,7 +84,7 @@ func (r *PostgresOrderRepository) GetAll() ([]order.Order, error) {
 	err := r.db.Raw(buildGetAllQuery()).Scan(&records).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, domainerrors.ErrRecordNotFound
+		return nil, errutil.ErrRecordNotFound
 	}
 
 	if err != nil {

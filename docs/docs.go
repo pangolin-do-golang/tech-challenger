@@ -19,10 +19,10 @@ const docTemplate = `{
             "post": {
                 "description": "Adds a Product to Customer's Cart",
                 "consumes": [
-                    "core/json"
+                    "application/json"
                 ],
                 "produces": [
-                    "core/json"
+                    "application/json"
                 ],
                 "tags": [
                     "Cart"
@@ -56,10 +56,10 @@ const docTemplate = `{
             "post": {
                 "description": "Edits a Product from Customer's Cart",
                 "consumes": [
-                    "core/json"
+                    "application/json"
                 ],
                 "produces": [
-                    "core/json"
+                    "application/json"
                 ],
                 "tags": [
                     "Cart"
@@ -89,14 +89,46 @@ const docTemplate = `{
                 }
             }
         },
+        "/cart/overview": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cart"
+                ],
+                "parameters": [
+                    {
+                        "description": "GetCartPayload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.GetCartPayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/cart/remove-product": {
             "post": {
                 "description": "Removes a Product from Customer's Cart",
                 "consumes": [
-                    "core/json"
+                    "application/json"
                 ],
                 "produces": [
-                    "core/json"
+                    "application/json"
                 ],
                 "tags": [
                     "Cart"
@@ -124,17 +156,17 @@ const docTemplate = `{
         },
         "/customer": {
             "get": {
-                "description": "Get all customer's list",
+                "description": "Overview all customer's list",
                 "consumes": [
-                    "core/json"
+                    "application/json"
                 ],
                 "produces": [
-                    "core/json"
+                    "application/json"
                 ],
                 "tags": [
                     "Customer"
                 ],
-                "summary": "Get customer list",
+                "summary": "Overview customer list",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -150,10 +182,10 @@ const docTemplate = `{
             "post": {
                 "description": "Create a new customer",
                 "consumes": [
-                    "core/json"
+                    "application/json"
                 ],
                 "produces": [
-                    "core/json"
+                    "application/json"
                 ],
                 "tags": [
                     "Customer"
@@ -189,17 +221,17 @@ const docTemplate = `{
         },
         "/customer/{cpf}": {
             "get": {
-                "description": "Get a customer by cpf",
+                "description": "Overview a customer by cpf",
                 "consumes": [
-                    "core/json"
+                    "application/json"
                 ],
                 "produces": [
-                    "core/json"
+                    "application/json"
                 ],
                 "tags": [
                     "Customer"
                 ],
-                "summary": "Get customer by cpf",
+                "summary": "Overview customer by cpf",
                 "parameters": [
                     {
                         "type": "string",
@@ -226,10 +258,10 @@ const docTemplate = `{
             "put": {
                 "description": "Update a customer by id",
                 "consumes": [
-                    "core/json"
+                    "application/json"
                 ],
                 "produces": [
-                    "core/json"
+                    "application/json"
                 ],
                 "tags": [
                     "Customer"
@@ -272,10 +304,10 @@ const docTemplate = `{
             "delete": {
                 "description": "Delete a customer by id",
                 "consumes": [
-                    "core/json"
+                    "application/json"
                 ],
                 "produces": [
-                    "core/json"
+                    "application/json"
                 ],
                 "tags": [
                     "Customer"
@@ -300,14 +332,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/order": {
+        "/orders": {
             "get": {
                 "description": "Get all order's list",
                 "consumes": [
-                    "core/json"
+                    "application/json"
                 ],
                 "produces": [
-                    "core/json"
+                    "application/json"
                 ],
                 "tags": [
                     "Order"
@@ -322,16 +354,22 @@ const docTemplate = `{
                                 "$ref": "#/definitions/order.Order"
                             }
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.HTTPError"
+                        }
                     }
                 }
             },
             "post": {
                 "description": "Create order from Cart",
                 "consumes": [
-                    "core/json"
+                    "application/json"
                 ],
                 "produces": [
-                    "core/json"
+                    "application/json"
                 ],
                 "tags": [
                     "Order"
@@ -355,24 +393,35 @@ const docTemplate = `{
                             "$ref": "#/definitions/order.Order"
                         }
                     },
-                    "500": {
-                        "description": "{\\\"error\\\": \\Internal Server Error\\\"}",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/controller.HTTPError"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/controller.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.HTTPError"
                         }
                     }
                 }
             }
         },
-        "/order/{id}": {
+        "/orders/{id}": {
             "get": {
-                "description": "Get a order by ID",
+                "description": "Get an order by ID",
                 "consumes": [
-                    "core/json"
+                    "application/json"
                 ],
                 "produces": [
-                    "core/json"
+                    "application/json"
                 ],
                 "tags": [
                     "Order"
@@ -395,10 +444,78 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "{\\\"error\\\": \\Invalid identifier informed\\\"}",
+                        "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/controller.HTTPError"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/controller.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.HTTPError"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Update by json an Order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Update an Order",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the Order",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "UpdateOrderPayload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.UpdateOrderPayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/order.Order"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controller.HTTPError"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/controller.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.HTTPError"
                         }
                     }
                 }
@@ -407,10 +524,10 @@ const docTemplate = `{
         "/product": {
             "get": {
                 "consumes": [
-                    "core/json"
+                    "application/json"
                 ],
                 "produces": [
-                    "core/json"
+                    "application/json"
                 ],
                 "tags": [
                     "Product"
@@ -450,10 +567,10 @@ const docTemplate = `{
         "/product/{id}": {
             "delete": {
                 "consumes": [
-                    "core/json"
+                    "application/json"
                 ],
                 "produces": [
-                    "core/json"
+                    "application/json"
                 ],
                 "tags": [
                     "Product"
@@ -573,6 +690,26 @@ const docTemplate = `{
                 }
             }
         },
+        "controller.GetCartPayload": {
+            "type": "object",
+            "required": [
+                "client_id"
+            ],
+            "properties": {
+                "client_id": {
+                    "type": "string",
+                    "format": "uuid"
+                }
+            }
+        },
+        "controller.HTTPError": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
         "controller.RemoveProductPayload": {
             "type": "object",
             "required": [
@@ -587,6 +724,18 @@ const docTemplate = `{
                 "product_id": {
                     "type": "string",
                     "format": "uuid"
+                }
+            }
+        },
+        "controller.UpdateOrderPayload": {
+            "type": "object",
+            "required": [
+                "status"
+            ],
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "paid"
                 }
             }
         },
@@ -613,10 +762,10 @@ const docTemplate = `{
         "order.Order": {
             "type": "object",
             "properties": {
-                "clientID": {
+                "client_id": {
                     "type": "string"
                 },
-                "createdAt": {
+                "created_at": {
                     "type": "string"
                 },
                 "id": {
@@ -625,7 +774,7 @@ const docTemplate = `{
                 "status": {
                     "type": "string"
                 },
-                "totalAmount": {
+                "total_amount": {
                     "type": "number"
                 }
             }
@@ -636,7 +785,7 @@ const docTemplate = `{
                 "category": {
                     "type": "string"
                 },
-                "createdAt": {
+                "created_at": {
                     "type": "string"
                 },
                 "description": {

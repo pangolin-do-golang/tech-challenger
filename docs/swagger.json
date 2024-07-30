@@ -83,6 +83,38 @@
                 }
             }
         },
+        "/cart/overview": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cart"
+                ],
+                "parameters": [
+                    {
+                        "description": "GetCartPayload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.GetCartPayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/cart/remove-product": {
             "post": {
                 "description": "Removes a Product from Customer's Cart",
@@ -118,7 +150,7 @@
         },
         "/customer": {
             "get": {
-                "description": "Get all customer's list",
+                "description": "Overview all customer's list",
                 "consumes": [
                     "application/json"
                 ],
@@ -128,7 +160,7 @@
                 "tags": [
                     "Customer"
                 ],
-                "summary": "Get customer list",
+                "summary": "Overview customer list",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -183,7 +215,7 @@
         },
         "/customer/{cpf}": {
             "get": {
-                "description": "Get a customer by cpf",
+                "description": "Overview a customer by cpf",
                 "consumes": [
                     "application/json"
                 ],
@@ -193,7 +225,7 @@
                 "tags": [
                     "Customer"
                 ],
-                "summary": "Get customer by cpf",
+                "summary": "Overview customer by cpf",
                 "parameters": [
                     {
                         "type": "string",
@@ -294,7 +326,7 @@
                 }
             }
         },
-        "/order": {
+        "/orders": {
             "get": {
                 "description": "Get all order's list",
                 "consumes": [
@@ -315,6 +347,12 @@
                             "items": {
                                 "$ref": "#/definitions/order.Order"
                             }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.HTTPError"
                         }
                     }
                 }
@@ -349,19 +387,30 @@
                             "$ref": "#/definitions/order.Order"
                         }
                     },
-                    "500": {
-                        "description": "{\\\"error\\\": \\Internal Server Error\\\"}",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/controller.HTTPError"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/controller.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.HTTPError"
                         }
                     }
                 }
             }
         },
-        "/order/{id}": {
+        "/orders/{id}": {
             "get": {
-                "description": "Get a order by ID",
+                "description": "Get an order by ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -389,10 +438,78 @@
                         }
                     },
                     "400": {
-                        "description": "{\\\"error\\\": \\Invalid identifier informed\\\"}",
+                        "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/controller.HTTPError"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/controller.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.HTTPError"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Update by json an Order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Update an Order",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the Order",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "UpdateOrderPayload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.UpdateOrderPayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/order.Order"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controller.HTTPError"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/controller.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.HTTPError"
                         }
                     }
                 }
@@ -415,15 +532,13 @@
                         "type": "string",
                         "description": "Name of Product",
                         "name": "search",
-                        "in": "path",
-                        "required": true
+                        "in": "path"
                     },
                     {
                         "type": "string",
                         "description": "Category of Product",
                         "name": "category",
-                        "in": "path",
-                        "required": true
+                        "in": "path"
                     }
                 ],
                 "responses": {
@@ -569,6 +684,26 @@
                 }
             }
         },
+        "controller.GetCartPayload": {
+            "type": "object",
+            "required": [
+                "client_id"
+            ],
+            "properties": {
+                "client_id": {
+                    "type": "string",
+                    "format": "uuid"
+                }
+            }
+        },
+        "controller.HTTPError": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
         "controller.RemoveProductPayload": {
             "type": "object",
             "required": [
@@ -583,6 +718,18 @@
                 "product_id": {
                     "type": "string",
                     "format": "uuid"
+                }
+            }
+        },
+        "controller.UpdateOrderPayload": {
+            "type": "object",
+            "required": [
+                "status"
+            ],
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "paid"
                 }
             }
         },
@@ -609,10 +756,10 @@
         "order.Order": {
             "type": "object",
             "properties": {
-                "clientID": {
+                "client_id": {
                     "type": "string"
                 },
-                "createdAt": {
+                "created_at": {
                     "type": "string"
                 },
                 "id": {
@@ -621,7 +768,7 @@
                 "status": {
                     "type": "string"
                 },
-                "totalAmount": {
+                "total_amount": {
                     "type": "number"
                 }
             }
@@ -632,7 +779,7 @@
                 "category": {
                     "type": "string"
                 },
-                "createdAt": {
+                "created_at": {
                     "type": "string"
                 },
                 "description": {

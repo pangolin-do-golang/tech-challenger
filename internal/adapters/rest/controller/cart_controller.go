@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/pangolin-do-golang/tech-challenge/internal/core/cart"
+	"github.com/pangolin-do-golang/tech-challenge/internal/errutil"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -9,6 +10,7 @@ import (
 )
 
 type CartController struct {
+	AbstractController
 	service cart.IService
 }
 
@@ -38,20 +40,18 @@ func (ctrl CartController) AddProduct(c *gin.Context) {
 	payload := &AddProductPayload{}
 	err := c.BindJSON(payload)
 	if err != nil {
-		// TODO melhorar retorno de validação
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctrl.Error(c, errutil.NewInputError(err))
 		return
 	}
 
-	err = ctrl.service.AddProduct(c.Request.Context(), &cart.Product{
-		ClientID:  payload.ClientID,
+	err = ctrl.service.AddProduct(c.Request.Context(), payload.ClientID, &cart.Product{
 		ProductID: payload.ProductID,
 		Quantity:  payload.Quantity,
 		Comments:  payload.Comments,
 	})
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
+		ctrl.Error(c, err)
 		return
 	}
 
@@ -78,18 +78,17 @@ func (ctrl CartController) EditProduct(c *gin.Context) {
 	payload := &EditProductPayload{}
 	err := c.BindJSON(payload)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctrl.Error(c, errutil.NewInputError(err))
 		return
 	}
 
-	err = ctrl.service.EditProduct(c.Request.Context(), &cart.Product{
-		ClientID:  payload.ClientID,
+	err = ctrl.service.EditProduct(c.Request.Context(), payload.ClientID, &cart.Product{
 		ProductID: payload.ProductID,
 		Quantity:  payload.Quantity,
 		Comments:  payload.Comments,
 	})
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
+		ctrl.Error(c, err)
 		return
 	}
 
@@ -114,15 +113,44 @@ func (ctrl CartController) RemoveProduct(c *gin.Context) {
 	payload := &RemoveProductPayload{}
 	err := c.BindJSON(payload)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctrl.Error(c, errutil.NewInputError(err))
 		return
 	}
 
 	err = ctrl.service.RemoveProduct(c.Request.Context(), payload.ClientID, payload.ProductID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
+		ctrl.Error(c, err)
 		return
 	}
 
 	c.Status(http.StatusOK)
+}
+
+type GetCartPayload struct {
+	ClientID uuid.UUID `json:"client_id" binding:"required" format:"uuid"`
+}
+
+// Overview get the full cart and its products
+// @Tags Cart
+// @Param payload body controller.GetCartPayload true "GetCartPayload"
+// @Accept json
+// @Produce json
+// @Success 200
+// @Failure 500 "Internal Server Error"
+// @Router /cart/overview [post]
+func (ctrl CartController) Overview(c *gin.Context) {
+	payload := &GetCartPayload{}
+	err := c.BindJSON(payload)
+	if err != nil {
+		ctrl.Error(c, errutil.NewInputError(err))
+		return
+	}
+
+	fullcart, err := ctrl.service.GetFullCart(payload.ClientID)
+	if err != nil {
+		ctrl.Error(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, fullcart)
 }

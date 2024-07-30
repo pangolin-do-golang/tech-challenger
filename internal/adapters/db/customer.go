@@ -2,10 +2,9 @@ package db
 
 import (
 	"errors"
-
 	"github.com/google/uuid"
 	"github.com/pangolin-do-golang/tech-challenge/internal/core/customer"
-	"github.com/pangolin-do-golang/tech-challenge/internal/domainerrors"
+	"github.com/pangolin-do-golang/tech-challenge/internal/errutil"
 	"gorm.io/gorm"
 )
 
@@ -15,10 +14,11 @@ type PostgresCustomerRepository struct {
 
 type CustomerPostgres struct {
 	BaseModel
-	Name  string `gorm:"name"`
-	Cpf   string `gorm:"uniqueIndex" json:"cpf"`
-	Email string `gorm:"email"`
-	Age   int    `gorm:"age"`
+	Name   string          `gorm:"name"`
+	Cpf    string          `gorm:"uniqueIndex" json:"cpf"`
+	Email  string          `gorm:"email"`
+	Age    int             `gorm:"age"`
+	Orders []OrderPostgres `gorm:"foreignKey:ClientID"`
 }
 
 func (cp CustomerPostgres) TableName() string {
@@ -55,7 +55,7 @@ func (r *PostgresCustomerRepository) Update(customerId uuid.UUID, cust customer.
 	err := r.db.First(&record, customerId).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, domainerrors.ErrRecordNotFound
+		return nil, errutil.ErrRecordNotFound
 	}
 
 	record = CustomerPostgres{
@@ -85,7 +85,7 @@ func (r *PostgresCustomerRepository) Delete(customerId uuid.UUID) error {
 	err := r.db.Delete(&record, customerId).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return domainerrors.ErrRecordNotFound
+		return errutil.ErrRecordNotFound
 	}
 
 	if err != nil {
@@ -101,7 +101,7 @@ func (r *PostgresCustomerRepository) GetAll() ([]customer.Customer, error) {
 	err := r.db.Find(&records).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, domainerrors.ErrRecordNotFound
+		return nil, errutil.ErrRecordNotFound
 	}
 
 	if err != nil {
@@ -128,7 +128,7 @@ func (r *PostgresCustomerRepository) GetByCpf(customerCpf string) (*customer.Cus
 	err := r.db.Where("cpf = ?", customerCpf).First(&record).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, domainerrors.ErrRecordNotFound
+		return nil, errutil.ErrRecordNotFound
 	}
 
 	if err != nil {

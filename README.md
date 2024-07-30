@@ -38,12 +38,12 @@ DB_NAME=postgres
 DB_PORT=5432
 ```
 
-## Executing with Docker Compose
+## Executing with Docker (Compose)
 
 ```shell
-docker-compose build
+docker compose build
 
-docker-compose up -d
+docker compose up -d
 
 curl --request GET --url http://localhost:8080/health
 
@@ -51,9 +51,15 @@ curl --request GET --url http://localhost:8080/health
 = Status Code 200
 ```
 
+> If you're having trouble deploying the application with `docker-compose` (and not `docker compose`), use docker version 27.0.0 or higher.
+
 ## Accessing Swagger UI
 
 Go to http://localhost:8080/swagger/index.html#/ after the application is running.
+
+## Guide
+
+Follow the guide (in portuguese) for a step-by-step guide to the project [here](https://github.com/pangolin-do-golang/tech-challenge/wiki/Guia-de-uso-da-API).
 
 ## Stack
 

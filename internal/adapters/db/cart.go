@@ -2,10 +2,10 @@ package db
 
 import (
 	"errors"
+	"github.com/pangolin-do-golang/tech-challenge/internal/errutil"
 
 	"github.com/google/uuid"
 	"github.com/pangolin-do-golang/tech-challenge/internal/core/cart"
-	"github.com/pangolin-do-golang/tech-challenge/internal/domainerrors"
 	"gorm.io/gorm"
 )
 
@@ -49,7 +49,7 @@ func (p *PostgresCartRepository) Get(clientID uuid.UUID) (*cart.Cart, error) {
 	err := p.db.First(&row, "client_id = ?", clientID).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, domainerrors.ErrRecordNotFound
+			return nil, errutil.ErrRecordNotFound
 		}
 
 		return nil, err
