@@ -17,19 +17,10 @@ const (
 	StatusFinished  = "FINISHED"
 	StatusPaid      = "PAID"
 	StatusDeclined  = "DECLINED"
+	StatusCanceled  = "CANCELED"
 )
 
 var ErrInvalidStatus = errors.New("invalid status transition")
-
-const (
-	StatusPending   = "PENDING"
-	StatusCreated   = "CREATED"
-	StatusPreparing = "PREPARING"
-	StatusFinished  = "FINISHED"
-	StatusPaid      = "PAID"
-	StatusDeclined  = "DECLINED"
-	StatusCanceled  = "CANCELED"
-)
 
 type Order struct {
 	ID          uuid.UUID `json:"id"`

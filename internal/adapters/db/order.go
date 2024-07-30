@@ -84,7 +84,7 @@ func (r *PostgresOrderRepository) GetAll() ([]order.Order, error) {
 	err := r.db.Raw(buildGetAllQuery()).Scan(&records).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, domainerrors.ErrRecordNotFound
+		return nil, errutil.ErrRecordNotFound
 	}
 
 	if err != nil {
