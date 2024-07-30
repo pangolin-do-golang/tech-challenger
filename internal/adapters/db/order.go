@@ -1,6 +1,10 @@
 package db
 
 import (
+	"errors"
+	"fmt"
+	"strings"
+
 	"github.com/google/uuid"
 	"github.com/pangolin-do-golang/tech-challenge/internal/core/order"
 	"github.com/pangolin-do-golang/tech-challenge/internal/errutil"
@@ -77,7 +81,12 @@ func (r *PostgresOrderRepository) Get(id uuid.UUID) (*order.Order, error) {
 func (r *PostgresOrderRepository) GetAll() ([]order.Order, error) {
 	var records []OrderPostgres
 
-	err := r.db.Find(&records).Error
+	err := r.db.Raw(buildGetAllQuery()).Scan(&records).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, domainerrors.ErrRecordNotFound
+	}
+
 	if err != nil {
 		return nil, err
 	}
@@ -94,4 +103,49 @@ func (r *PostgresOrderRepository) GetAll() ([]order.Order, error) {
 	}
 
 	return parsedOrders, nil
+}
+
+func buildGetAllQuery() string {
+	ignoredStatus := []string{
+		order.StatusFinished,
+		order.StatusDeclined,
+	}
+
+	statusSortedPriority := []string{
+		order.StatusReady,
+		order.StatusPreparing,
+		order.StatusPaid,
+		order.StatusPending,
+		order.StatusCreated,
+	}
+
+	return fmt.Sprintf(`
+		SELECT * FROM "order"
+		WHERE status NOT IN (%s)
+		ORDER BY
+			CASE %s
+			END, created_at
+		`,
+		buildIgnoredStatusCondition(ignoredStatus),
+		buildSortedStatusCase(statusSortedPriority),
+	)
+}
+
+func buildIgnoredStatusCondition(ignoredStatus []string) string {
+	var ignoredParts []string
+	for _, status := range ignoredStatus {
+		ignoredParts = append(ignoredParts, fmt.Sprintf("'%s'", status))
+	}
+
+	return strings.Join(ignoredParts, ", ")
+}
+
+func buildSortedStatusCase(statusSortedPriority []string) string {
+	var caseParts []string
+	for i, status := range statusSortedPriority {
+		caseParts = append(caseParts, fmt.Sprintf("WHEN status = '%s' THEN %d", status, i+1))
+	}
+	caseParts = append(caseParts, fmt.Sprintf("ELSE %d", len(statusSortedPriority)))
+
+	return strings.Join(caseParts, " ")
 }

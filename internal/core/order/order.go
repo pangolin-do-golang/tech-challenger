@@ -9,6 +9,16 @@ import (
 	"github.com/google/uuid"
 )
 
+const (
+	StatusPending   = "PENDING"
+	StatusCreated   = "CREATED"
+	StatusPreparing = "PREPARING"
+	StatusReady     = "READY"
+	StatusFinished  = "FINISHED"
+	StatusPaid      = "PAID"
+	StatusDeclined  = "DECLINED"
+)
+
 var ErrInvalidStatus = errors.New("invalid status transition")
 
 const (
