@@ -13,6 +13,7 @@ services:
     volumes:
       - ./data:/var/lib/postgresql/data:rw
       - ./database/seed/00.sql:/docker-entrypoint-initdb.d/00.sql:rw
+      - ./database/seed/reset.sql:/docker-entrypoint-initdb.d/reset.sql:rw
     networks:
       - go-food-tech-challenge-network
 
