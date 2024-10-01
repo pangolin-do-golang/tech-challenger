@@ -5,7 +5,7 @@ metadata:
   labels:
     app: tech-challenge
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: tech-challenge
@@ -16,28 +16,25 @@ spec:
     spec:
       containers:
         - name: tech-challenge-container
-          image: ghcr.io/pangolin-do-golang/tech-challenge:7c14309
+          image: 872515278821.dkr.ecr.us-east-1.amazonaws.com/dev-tech-challange:v1.0.8
           ports:
             - containerPort: 8080
 
           env:
             - name: DB_USERNAME
-              value: postgres.jhwmlvbsmtyluoccjabw
+              value: "tech_challenge_user"
 
             - name: DB_HOST
-              value: aws-0-sa-east-1.pooler.supabase.com
+              value: "terraform-20240930234611514100000001.czk8emokqsrn.us-east-1.rds.amazonaws.com"
 
             - name: DB_NAME
-              value: postgres
+              value: tech_challenge
 
             - name: DB_PORT
-              value: "6543"
+              value: "5432"
 
             - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: db-password-secret
-                  key: db-password
+              value: bXlzZWN1cmVwYXNzd29yZA==
 
           livenessProbe:
             httpGet:

@@ -47,7 +47,7 @@ func (rs RestServer) Serve() {
 	handler.RegisterCartHandlers(r, rs.cartService)
 	handler.RegisterCustomerHandlers(r, rs.customerService)
 	handler.RegisterSwaggerHandlers(r)
-	err := r.Run()
+	err := r.Run("0.0.0.0:8080")
 	if err != nil {
 		panic(err)
 	}
