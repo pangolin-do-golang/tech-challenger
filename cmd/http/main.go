@@ -9,15 +9,12 @@ import (
 	_ "github.com/pangolin-do-golang/tech-challenge/docs"
 	dbAdapter "github.com/pangolin-do-golang/tech-challenge/internal/adapters/db"
 	"github.com/pangolin-do-golang/tech-challenge/internal/adapters/rest/server"
-	"github.com/pangolin-do-golang/tech-challenge/internal/core/cart"
-	"github.com/pangolin-do-golang/tech-challenge/internal/core/customer"
 	"github.com/pangolin-do-golang/tech-challenge/internal/core/order"
-	"github.com/pangolin-do-golang/tech-challenge/internal/core/product"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-// @title Tech Challenge Food API
+// @title Tech Challenge Order Food API
 // @version 0.1.0
 // @description Fast Food API for FIAP Tech course
 
@@ -29,25 +26,11 @@ func main() {
 		panic(err)
 	}
 
-	customerRepository := dbAdapter.NewPostgresCustomerRepository(db)
-	customerService := customer.NewService(customerRepository)
-
-	productRepository := dbAdapter.NewPostgresProductRepository(db)
-	productService := product.NewProductService(productRepository)
-
-	cartRepository := dbAdapter.NewPostgresCartRepository(db)
-	cartProductsRepository := dbAdapter.NewPostgresCartProductsRepository(db)
-	cartService := cart.NewService(cartRepository, cartProductsRepository)
-
 	orderRepository := dbAdapter.NewPostgresOrderRepository(db)
-	orderProductRepository := dbAdapter.NewPostgresOrderProductsRepository(db)
-	orderService := order.NewOrderService(orderRepository, orderProductRepository, cartService, productService)
+	orderService := order.NewOrderService(orderRepository)
 
 	restServer := server.NewRestServer(&server.RestServerOptions{
-		OrderService:    orderService,
-		ProductService:  productService,
-		CartService:     cartService,
-		CustomerService: customerService,
+		OrderService: orderService,
 	})
 
 	restServer.Serve()
@@ -68,13 +51,7 @@ func initDb() (*gorm.DB, error) {
 	}
 
 	err = db.AutoMigrate(
-		&dbAdapter.CustomerPostgres{},
-		&dbAdapter.ProductPostgres{},
 		&dbAdapter.OrderPostgres{},
-		&dbAdapter.CartPostgres{},
-		&dbAdapter.CartProductsPostgres{},
-		&dbAdapter.OrderPostgres{},
-		&dbAdapter.OrderProductPostgres{},
 	)
 	if err != nil {
 		log.Fatalln(err)

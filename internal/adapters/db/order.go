@@ -17,11 +17,11 @@ type PostgresOrderRepository struct {
 
 type OrderPostgres struct {
 	BaseModel
-	ClientID    uuid.UUID              `gorm:"client_id,type:uuid"`
-	TotalAmount float64                `gorm:"total_amount"`
-	Status      string                 `gorm:"status"`
-	Customer    CustomerPostgres       `gorm:"foreignKey:ClientID"`
-	Products    []OrderProductPostgres `gorm:"foreignKey:OrderID"`
+	ClientID    uuid.UUID `gorm:"client_id,type:uuid"`
+	TotalAmount float64   `gorm:"total_amount"`
+	Status      string    `gorm:"status"`
+	Customer    string    `gorm:"customer_id"`
+	Products    []string  `gorm:"product_id"`
 }
 
 func (op OrderPostgres) TableName() string {
