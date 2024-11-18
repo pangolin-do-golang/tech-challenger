@@ -14,10 +14,11 @@ type PostgresCustomerRepository struct {
 
 type CustomerPostgres struct {
 	BaseModel
-	Name  string `gorm:"name"`
-	Cpf   string `gorm:"uniqueIndex" json:"cpf"`
-	Email string `gorm:"email"`
-	Age   int    `gorm:"age"`
+	Name   string `gorm:"name"`
+	Cpf    string `gorm:"uniqueIndex" json:"cpf"`
+	Email  string `gorm:"email"`
+	Age    int    `gorm:"age"`
+	Orders []int  `gorm:"client_id"`
 }
 
 func (cp CustomerPostgres) TableName() string {
