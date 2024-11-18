@@ -16,7 +16,7 @@ type PostgresCartRepository struct {
 type CartPostgres struct {
 	BaseModel
 	ClientID uuid.UUID              `gorm:"client_id"`
-	Customer CustomerPostgres       `gorm:"foreignKey:ClientID"`
+	Customer string                 `gorm:"customer_id"`
 	Products []CartProductsPostgres `gorm:"foreignKey:CartID"`
 }
 

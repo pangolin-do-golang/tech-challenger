@@ -57,13 +57,9 @@ func initDb() (*gorm.DB, error) {
 	}
 
 	err = db.AutoMigrate(
-		&dbAdapter.CustomerPostgres{},
 		&dbAdapter.ProductPostgres{},
-		&dbAdapter.OrderPostgres{},
 		&dbAdapter.CartPostgres{},
 		&dbAdapter.CartProductsPostgres{},
-		&dbAdapter.OrderPostgres{},
-		&dbAdapter.OrderProductPostgres{},
 	)
 	if err != nil {
 		log.Fatalln(err)

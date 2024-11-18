@@ -14,22 +14,6 @@ func (e *Error) Error() string {
 	return e.Message
 }
 
-func NewSystemError(err error, mes string) *Error {
-	return &Error{
-		Message:       mes,
-		Type:          "SYSTEM",
-		originalError: err,
-	}
-}
-
-func NewBusinessError(err error, mes string) *Error {
-	return &Error{
-		Message:       mes,
-		originalError: err,
-		Type:          "BUSINESS",
-	}
-}
-
 func NewInputError(err error) *Error {
 	return &Error{
 		originalError: err,
