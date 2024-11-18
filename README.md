@@ -2,7 +2,7 @@
 
 Miro Board: https://miro.com/app/board/uXjVKVoZwos=/?share_link_id=718027124865
 
-# Tech Challenge
+# Tech Challenge Customer API
 
 ## Install
 
