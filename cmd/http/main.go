@@ -10,8 +10,6 @@ import (
 	dbAdapter "github.com/pangolin-do-golang/tech-challenge/internal/adapters/db"
 	"github.com/pangolin-do-golang/tech-challenge/internal/adapters/rest/server"
 	"github.com/pangolin-do-golang/tech-challenge/internal/core/cart"
-	"github.com/pangolin-do-golang/tech-challenge/internal/core/customer"
-	"github.com/pangolin-do-golang/tech-challenge/internal/core/order"
 	"github.com/pangolin-do-golang/tech-challenge/internal/core/product"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -29,9 +27,6 @@ func main() {
 		panic(err)
 	}
 
-	customerRepository := dbAdapter.NewPostgresCustomerRepository(db)
-	customerService := customer.NewService(customerRepository)
-
 	productRepository := dbAdapter.NewPostgresProductRepository(db)
 	productService := product.NewProductService(productRepository)
 
@@ -39,15 +34,9 @@ func main() {
 	cartProductsRepository := dbAdapter.NewPostgresCartProductsRepository(db)
 	cartService := cart.NewService(cartRepository, cartProductsRepository)
 
-	orderRepository := dbAdapter.NewPostgresOrderRepository(db)
-	orderProductRepository := dbAdapter.NewPostgresOrderProductsRepository(db)
-	orderService := order.NewOrderService(orderRepository, orderProductRepository, cartService, productService)
-
 	restServer := server.NewRestServer(&server.RestServerOptions{
-		OrderService:    orderService,
-		ProductService:  productService,
-		CartService:     cartService,
-		CustomerService: customerService,
+		ProductService: productService,
+		CartService:    cartService,
 	})
 
 	restServer.Serve()

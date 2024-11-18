@@ -2,7 +2,7 @@
 
 Miro Board: https://miro.com/app/board/uXjVKVoZwos=/?share_link_id=718027124865
 
-# Tech Challenge
+# Tech Challenge Cart API
 
 ## Install
 
@@ -138,8 +138,6 @@ kubectl port-forward svc/tech-challenge-service 4000:80 -n dev
 - `internal`: Directory to contain application code that should not be exposed to external packages.
     - `core`: Directory that contains the application's core business logic.
         - `cart`: Directory contains definition of the entity's heights, interfaces, repository and service of the entity Cart.
-        - `customer`: Directory contains definition of the entity's heights, interfaces, repository and service of the entity Customer.
-        - `order`: Directory contains definition of the entity's heights, interfaces, repository and service of the entity Order.
         - `product`: Directory contains definition of the entity's heights, interfaces, repository and service of the entity Product.
     - `adapters`: Directory to contain external services that will interact with the application core.
         - `db`: Directory contains the implementation of the repositories.
