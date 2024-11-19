@@ -20,12 +20,12 @@ services:
   server:
     build:
       context: .
-    container_name: go_tech_challenge_app
+    container_name: go_tech_challenge_order_app
     restart: always
     links:
     - pgsql:pgsql
     ports:
-      - "8080:8080"
+      - "8082:8080"
     depends_on:
       pgsql:
         condition: service_started
