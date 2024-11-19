@@ -20,7 +20,7 @@ services:
   server:
     build:
       context: .
-    container_name: go_tech_challenge_app
+    container_name: go_tech_challenge_customer_app
     restart: always
     links:
     - pgsql:pgsql
