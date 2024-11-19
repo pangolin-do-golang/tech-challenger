@@ -45,7 +45,7 @@ docker compose build
 
 docker compose up -d
 
-curl --request GET --url http://localhost:8080/health
+curl --request GET --url http://localhost:8085/health
 
 ## Expected response
 = Status Code 200
