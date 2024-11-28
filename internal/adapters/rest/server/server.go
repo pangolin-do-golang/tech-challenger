@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/pangolin-do-golang/tech-challenge/internal/adapters/rest/handler"
-	"github.com/pangolin-do-golang/tech-challenge/internal/adapters/rest/middleware"
-	"github.com/pangolin-do-golang/tech-challenge/internal/core/customer"
+	"github.com/pangolin-do-golang/tech-challenge-customer-api/internal/adapters/rest/handler"
+	"github.com/pangolin-do-golang/tech-challenge-customer-api/internal/adapters/rest/middleware"
+	"github.com/pangolin-do-golang/tech-challenge-customer-api/internal/core/customer"
 )
 
 type RestServer struct {

@@ -2,8 +2,8 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pangolin-do-golang/tech-challenge/internal/adapters/rest/controller"
-	"github.com/pangolin-do-golang/tech-challenge/internal/core/customer"
+	"github.com/pangolin-do-golang/tech-challenge-customer-api/internal/adapters/rest/controller"
+	"github.com/pangolin-do-golang/tech-challenge-customer-api/internal/core/customer"
 )
 
 func RegisterCustomerHandlers(router *gin.Engine, service customer.IService) {

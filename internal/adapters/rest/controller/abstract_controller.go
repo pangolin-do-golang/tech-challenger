@@ -3,7 +3,7 @@ package controller
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
-	"github.com/pangolin-do-golang/tech-challenge/internal/errutil"
+	"github.com/pangolin-do-golang/tech-challenge-customer-api/internal/errutil"
 	"log"
 )
 

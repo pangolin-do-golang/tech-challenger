@@ -1,4 +1,4 @@
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=pangolin-do-golang_tech-challenge&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=pangolin-do-golang_tech-challenge) ![Known Vulnerabilities](https://snyk.io/test/github/pcbarretos/pangolin-do-golang/tech-challenge/badge.svg)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=pangolin-do-golang_tech-challenge&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=pangolin-do-golang_tech-challenge) ![Known Vulnerabilities](https://snyk.io/test/github/pcbarretos/pangolin-do-golang/tech-challenge-customer-api/badge.svg)
 
 Miro Board: https://miro.com/app/board/uXjVKVoZwos=/?share_link_id=718027124865
 
@@ -59,7 +59,7 @@ Go to http://localhost:8080/swagger/index.html#/ after the application is runnin
 
 ## Guide
 
-Follow the guide (in portuguese) for a step-by-step guide to the project [here](https://github.com/pangolin-do-golang/tech-challenge/wiki/Guia-de-uso-da-API).
+Follow the guide (in portuguese) for a step-by-step guide to the project [here](https://github.com/pangolin-do-golang/tech-challenge-customer-api/wiki/Guia-de-uso-da-API).
 
 ## Stack
 
@@ -109,7 +109,7 @@ The documentation can be founded at the path `/docs/swagger.yaml` or accessing t
 
 ## Infrastructure
 
-[Requirements Infrastructure](https://github.com/pangolin-do-golang/tech-challenge/blob/main/terraform/README.md)
+[Requirements Infrastructure](https://github.com/pangolin-do-golang/tech-challenge-customer-api/blob/main/terraform/README.md)
 
 ## Kubernetes
 
@@ -125,7 +125,7 @@ The order of execution is:
 You can forward the port with the following command:
 
 ```bash
-kubectl port-forward svc/tech-challenge-service 4000:80 -n dev
+kubectl port-forward svc/tech-challenge-customer-api-service 4000:80 -n dev
 ```
 
 ### Kubernates Architecture
