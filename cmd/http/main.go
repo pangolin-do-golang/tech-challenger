@@ -29,19 +29,14 @@ func main() {
 		panic(err)
 	}
 
-	customerRepository := dbAdapter.NewPostgresCustomerRepository(db)
-	customerService := customer.NewService(customerRepository)
+	customerService := customer.NewService()
 
 	productRepository := dbAdapter.NewPostgresProductRepository(db)
 	productService := product.NewProductService(productRepository)
 
-	cartRepository := dbAdapter.NewPostgresCartRepository(db)
-	cartProductsRepository := dbAdapter.NewPostgresCartProductsRepository(db)
-	cartService := cart.NewService(cartRepository, cartProductsRepository)
+	cartService := cart.NewService()
 
-	orderRepository := dbAdapter.NewPostgresOrderRepository(db)
-	orderProductRepository := dbAdapter.NewPostgresOrderProductsRepository(db)
-	orderService := order.NewOrderService(orderRepository, orderProductRepository, cartService, productService)
+	orderService := order.NewOrderService(cartService, productService)
 
 	restServer := server.NewRestServer(&server.RestServerOptions{
 		OrderService:    orderService,
@@ -55,6 +50,7 @@ func main() {
 
 func initDb() (*gorm.DB, error) {
 	_ = godotenv.Load()
+
 	dsn := fmt.Sprintf("user=%s password=%s host=%s port=%s dbname=%s sslmode=disable TimeZone=America/Sao_Paulo",
 		os.Getenv("DB_USERNAME"),
 		os.Getenv("DB_PASSWORD"),

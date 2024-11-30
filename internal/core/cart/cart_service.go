@@ -2,34 +2,37 @@ package cart
 
 import (
 	"context"
-	"errors"
+	"github.com/go-resty/resty/v2"
 	"github.com/google/uuid"
-	"github.com/pangolin-do-golang/tech-challenge/internal/errutil"
+	"os"
 )
 
 type Service struct {
-	CartRepository         ICartRepository
-	CartProductsRepository ICartProductRepository
+	HttpClient resty.Client
 }
 
-func NewService(cartRepository ICartRepository, cartProductsRepository ICartProductRepository) IService {
+func NewService() IService {
+	client := resty.New()
+	client.SetBaseURL(os.Getenv("CART_SERVICE_URL"))
 	return &Service{
-		CartRepository:         cartRepository,
-		CartProductsRepository: cartProductsRepository,
+		HttpClient: *client,
 	}
 }
 
 func (s *Service) LoadCart(_ context.Context, clientID uuid.UUID) (*Cart, error) {
-	cart, err := s.CartRepository.Get(clientID)
-	if err != nil {
-		if !errors.Is(err, errutil.ErrRecordNotFound) {
-			return nil, err
-		}
+	var cart *Cart
 
-		cart, err = s.CartRepository.Create(clientID)
-		if err != nil {
-			return nil, err
-		}
+	_, err := s.
+		HttpClient.
+		R().
+		SetBody(LoadCardPayload{
+			ClientID: clientID,
+		}).
+		SetResult(&cart).
+		Post("/cart/loadcart")
+
+	if err != nil {
+		return nil, err
 	}
 
 	return cart, nil
@@ -37,73 +40,105 @@ func (s *Service) LoadCart(_ context.Context, clientID uuid.UUID) (*Cart, error)
 }
 
 func (s *Service) GetFullCart(clientID uuid.UUID) (*Cart, error) {
-	cart, err := s.CartRepository.Get(clientID)
+	var cart *Cart
+	_, err := s.
+		HttpClient.
+		R().
+		SetResult(&cart).
+		Get("/cart/overview")
+
 	if err != nil {
 		return nil, err
 	}
-
-	products, err := s.CartProductsRepository.GetByCartID(context.Background(), cart.ID)
-	if err != nil {
-		return nil, err
-	}
-
-	cart.Products = products
 
 	return cart, nil
 }
 
+type CleanupPayload struct {
+	ClientID uuid.UUID `json:"client_id" binding:"required" format:"uuid"`
+}
+
 func (s *Service) Cleanup(clientID uuid.UUID) error {
-	cart, err := s.LoadCart(context.Background(), clientID)
+
+	_, err := s.HttpClient.R().SetBody(CleanupPayload{
+		ClientID: clientID,
+	}).Post("/cart/cleanup")
+
 	if err != nil {
 		return err
 	}
 
-	products, err := s.CartProductsRepository.GetByCartID(context.Background(), cart.ID)
-	for _, p := range products {
-		err = s.CartProductsRepository.DeleteByProductID(context.Background(), cart.ID, p.ProductID)
-		if err != nil {
-			return err
-		}
-	}
-
 	return nil
+}
+
+type AddProductPayload struct {
+	ClientID  uuid.UUID `json:"client_id" binding:"required" format:"uuid"`
+	ProductID uuid.UUID `json:"product_id" binding:"required" format:"uuid"`
+	Quantity  int       `json:"quantity" binding:"required,min=1" example:"1"`
+	Comments  string    `json:"comments"`
 }
 
 func (s *Service) AddProduct(ctx context.Context, clientID uuid.UUID, product *Product) error {
-	cart, err := s.LoadCart(ctx, clientID)
+
+	_, err := s.HttpClient.R().SetBody(AddProductPayload{
+		ClientID:  clientID,
+		ProductID: product.ProductID,
+		Quantity:  product.Quantity,
+		Comments:  product.Comments,
+	}).Post("/cart/add-product")
+
 	if err != nil {
 		return err
-	}
-
-	// TODO verificar se produto já tá no carrinho/colocar índice de unicidade
-	return s.CartProductsRepository.Create(ctx, cart.ID, product)
-}
-
-func (s *Service) RemoveProduct(ctx context.Context, clientID uuid.UUID, productID uuid.UUID) error {
-	cart, err := s.LoadCart(ctx, clientID)
-	if err != nil {
-		return err
-	}
-
-	products, err := s.CartProductsRepository.GetByCartID(ctx, cart.ID)
-	if err != nil {
-		return err
-	}
-
-	for _, product := range products {
-		if product.ProductID == productID {
-			return s.CartProductsRepository.DeleteByProductID(ctx, cart.ID, productID)
-		}
 	}
 
 	return nil
 }
 
-func (s *Service) EditProduct(ctx context.Context, clientID uuid.UUID, product *Product) error {
-	cart, err := s.LoadCart(ctx, clientID)
+type RemoveProductPayload struct {
+	clientID  uuid.UUID `json:"client_id"`
+	productID uuid.UUID `json:"product_id"`
+}
+
+type LoadCardPayload struct {
+	ClientID uuid.UUID `json:"client_id" binding:"required" format:"uuid"`
+}
+
+func (s *Service) RemoveProduct(ctx context.Context, clientID uuid.UUID, productID uuid.UUID) error {
+	_, err := s.HttpClient.R().SetBody(RemoveProductPayload{
+		productID: productID,
+		clientID:  clientID,
+	}).Post("/cart/remove-product")
+
 	if err != nil {
 		return err
 	}
 
-	return s.CartProductsRepository.UpdateProductByProductID(ctx, cart.ID, product.ProductID, product)
+	return nil
+}
+
+type EditProductPayload struct {
+	ClientID  uuid.UUID `json:"client_id" binding:"required" format:"uuid"`
+	ProductID uuid.UUID `json:"product_id" binding:"required" format:"uuid"`
+	Quantity  int       `json:"quantity" binding:"required" example:"2"`
+	Comments  string    `json:"comments"`
+}
+
+func (s *Service) EditProduct(ctx context.Context, clientID uuid.UUID, product *Product) error {
+
+	_, err := s.
+		HttpClient.
+		R().
+		SetBody(EditProductPayload{
+			ClientID:  clientID,
+			ProductID: product.ProductID,
+			Quantity:  product.Quantity,
+			Comments:  product.Comments,
+		}).
+		Post("/cart/edit-product")
+
+	if err != nil {
+		return nil
+	}
+
+	return nil
 }
