@@ -32,7 +32,7 @@ jobs:
           SHA: ${{ steps.short-sha.outputs.sha }}
         with:
           args: >
-            -Dsonar.organization=pangolin-golang
+            -Dsonar.organization=pangolin-do-golang
             -Dsonar.projectKey=pangolin-do-golang_tech-challenger
             -Dsonar.projectVersion=${{ env.SHA }}
             -Dsonar.qualitygate.wait=true
