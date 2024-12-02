@@ -33,7 +33,7 @@ jobs:
         with:
           args: >
             -Dsonar.organization=pangolin-golang
-            -Dsonar.projectKey=pangolin-do-golang_tech-challenge 
+            -Dsonar.projectKey=pangolin-do-golang_tech-challenger
             -Dsonar.projectVersion=${{ env.SHA }}
             -Dsonar.qualitygate.wait=true
             -Dsonar.tests=internal/
