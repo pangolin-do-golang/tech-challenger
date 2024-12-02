@@ -27,6 +27,9 @@ To correctly use the project, it is necessary to define a .env file, with the va
 * DB_HOST 
 * DB_NAME 
 * DB_PORT
+* CART_SERVICE_URL
+* ORDER_SERVICE_URL
+* CUSTOMER_SERVICE_URL
 
 We recommend using for development the following values:
 
@@ -36,6 +39,9 @@ DB_PASSWORD=pass
 DB_HOST=pgsql
 DB_NAME=postgres
 DB_PORT=5432
+CART_SERVICE_URL=http://localhost:8081 # depends on how you start other services
+ORDER_SERVICE_URL=http://localhost:8082 # depends on how you start other services
+CUSTOMER_SERVICE_URL=http://localhost:8083 # depends on how you start other services
 ```
 
 ## Executing with Docker (Compose)
